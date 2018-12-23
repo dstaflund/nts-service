@@ -1,15 +1,36 @@
-package com.github.dstaflund.nts;
+package com.github.dstaflund.nts.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity
+@Table(name="nts_maps", schema="public")
 public class NtsMap implements Serializable {
+
+    @Id
+    @Column(name = "name", unique = true, nullable = false, insertable = false, updatable = false, length = 6)
     private String name;
+
+    @Column(name = "snippet", insertable = false, updatable = false, length = 40)
     private String snippet;
+
+    @Column(name = "north", insertable = false, updatable = false, precision = 5, scale = 2)
     private float north;
+
+    @Column(name = "south", insertable = false, updatable = false, precision = 5, scale = 2)
     private float south;
+
+    @Column(name = "east", insertable = false, updatable = false, precision = 5, scale = 2)
     private float east;
+
+    @Column(name = "west", insertable = false, updatable = false, precision = 5, scale = 2)
     private float west;
+
+    @Column(name = "parent", insertable = false, updatable = false, length = 6)
     private String parent;
 
     public String getName() {

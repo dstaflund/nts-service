@@ -1,4 +1,5 @@
 rootProject.name = 'nts'
 include 'nts-service'
 include 'nts-db'
+include 'nts-tomcat'
 

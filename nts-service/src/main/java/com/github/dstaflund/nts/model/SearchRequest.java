@@ -1,11 +1,10 @@
-package com.github.dstaflund.nts;
+package com.github.dstaflund.nts.model;
 
 import org.hibernate.validator.constraints.Length;
 
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;

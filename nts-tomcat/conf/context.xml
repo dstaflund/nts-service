@@ -1,0 +1,6 @@
+<ResourceLink
+    name="jdbc/nts-map-db"
+    global="jdbc/nts-map-db"
+    auth="Container"
+    type="javax.sql.DataSource"
+/>
