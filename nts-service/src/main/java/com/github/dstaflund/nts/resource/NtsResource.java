@@ -1,7 +1,8 @@
 package com.github.dstaflund.nts.resource;
 
+import com.github.dstaflund.nts.model.AreaSearchContext;
+import com.github.dstaflund.nts.model.CoordinateSearchContext;
 import com.github.dstaflund.nts.model.NtsMap;
-import com.github.dstaflund.nts.model.SearchRequest;
 import com.github.dstaflund.nts.provider.NtsMapProvider;
 
 import javax.validation.Valid;
@@ -17,7 +18,14 @@ import java.util.List;
 public class NtsResource {
 
     @GET
-    public List<NtsMap> GetMapDetails(@Valid @BeanParam SearchRequest request){
-        return NtsMapProvider.getInstance().GetMaps(request);
+    @Path("/coord")
+    public List<NtsMap> findMapsByCoordinate(@Valid @BeanParam CoordinateSearchContext request){
+        return NtsMapProvider.getInstance().findMapsByCoordinate(request);
+    }
+
+    @GET
+    @Path("/area")
+    public List<NtsMap> findMapsByArea(@Valid @BeanParam AreaSearchContext request){
+        return NtsMapProvider.getInstance().findMapsByArea(request);
     }
 }

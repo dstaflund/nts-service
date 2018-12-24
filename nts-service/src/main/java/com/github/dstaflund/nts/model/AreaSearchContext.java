@@ -10,7 +10,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 
-public class SearchRequest implements Serializable {
+public class AreaSearchContext implements Serializable {
 
     @QueryParam("name")
     @Length(min = 2, max = 6, message = "Name must be between 2 to 6 characters in length")
@@ -21,24 +21,24 @@ public class SearchRequest implements Serializable {
     @Length(max = 40, message = "Snippet cannot be longer than 40 characters")
     private String snippet;
 
-    @QueryParam("north")
-    @DecimalMin(value = "40.25", message = "North must not have a value smaller than 40.25")
+    @QueryParam("n")
+    @DecimalMin(value = "40", message = "North must not have a value smaller than 40")
     @DecimalMax(value = "87", message = "North must not have a value larger than 87")
     private Float north;
 
-    @QueryParam("south")
+    @QueryParam("s")
     @DecimalMin(value = "40", message = "South must not have a value smaller than 40")
-    @DecimalMax(value = "86.25", message = "South must not have a value larger than 86.25")
+    @DecimalMax(value = "87", message = "South must not have a value larger than 87")
     private Float south;
 
-    @QueryParam("east")
-    @DecimalMin(value = "-141", message = "East must not have a value smaller than -141")
+    @QueryParam("e")
+    @DecimalMin(value = "-144", message = "East must not have a value smaller than -144")
     @DecimalMax(value = "-48", message = "East must not have a value larger than -48")
     private Float east;
 
-    @QueryParam("west")
+    @QueryParam("w")
     @DecimalMin(value = "-144", message = "West must not have a value smaller than -144")
-    @DecimalMax(value = "-48.5", message = "West must not have a value larger than -48.5")
+    @DecimalMax(value = "-48", message = "West must not have a value larger than -48")
     private Float west;
 
     @QueryParam("parent")
@@ -152,18 +152,18 @@ public class SearchRequest implements Serializable {
     @Override
     public String toString() {
         return String.format(
-                "SearchRequest(name=<%s>, snippet=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, parent=<%s>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
-                name,
-                snippet,
-                north,
-                south,
-                east,
-                west,
-                parent,
-                limit,
-                offset,
-                sort,
-                filter
+            "AreaSearchContext(name=<%s>, snippet=<%s>, n=<%.2f>, s=<%.2f>, e=<%.2f>, w=<%.2f>, parent=<%s>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            name,
+            snippet,
+            north,
+            south,
+            east,
+            west,
+            parent,
+            limit,
+            offset,
+            sort,
+            filter
         );
     }
 }
