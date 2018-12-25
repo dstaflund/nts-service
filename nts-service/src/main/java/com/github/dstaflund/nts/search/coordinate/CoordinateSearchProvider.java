@@ -19,9 +19,9 @@ public class CoordinateSearchProvider {
         Session session = sessionFactory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
             session.getNamedQuery(CoordinateQueryContract.QUERY_NAME)
-                .setParameter(CoordinateQueryContract.PARAM_NAME, ctx.getName())
-                .setParameter(CoordinateQueryContract.PARAM_SNIPPET, ctx.getSnippet())
-                .setParameter(CoordinateQueryContract.PARAM_PARENT, ctx.getParent())
+                .setParameter(CoordinateQueryContract.PARAM_NAME, NtsMap.formatName(ctx.getName()))
+                .setParameter(CoordinateQueryContract.PARAM_SNIPPET, NtsMap.formatSnippet(ctx.getSnippet()))
+                .setParameter(CoordinateQueryContract.PARAM_PARENT, NtsMap.formatParent(ctx.getParent()))
                 .setParameter(CoordinateQueryContract.PARAM_LATITUDE, ctx.getLatitude())
                 .setParameter(CoordinateQueryContract.PARAM_LONGITUDE, ctx.getLongitude())
                 .setTimeout(sTimeoutInSeconds)

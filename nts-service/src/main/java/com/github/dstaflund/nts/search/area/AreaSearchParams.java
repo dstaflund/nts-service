@@ -67,7 +67,7 @@ public class AreaSearchParams implements Serializable {
     private String filter;
 
     public String getName() {
-        return name == null ? null : name.trim().toUpperCase();
+        return name;
     }
 
     public void setName(String name) {
@@ -75,7 +75,7 @@ public class AreaSearchParams implements Serializable {
     }
 
     public String getSnippet() {
-        return snippet == null ? null : snippet.trim().toUpperCase();
+        return snippet;
     }
 
     public void setSnippet(String snippet) {
@@ -83,7 +83,7 @@ public class AreaSearchParams implements Serializable {
     }
 
     public String getParent() {
-        return parent == null ? null : parent.trim().toUpperCase();
+        return parent;
     }
 
     public void setParent(String parent) {
@@ -152,5 +152,23 @@ public class AreaSearchParams implements Serializable {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "AreaSearchParams(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            name,
+            snippet,
+            parent,
+            north,
+            south,
+            east,
+            west,
+            limit,
+            offset,
+            sort,
+            filter
+        );
     }
 }

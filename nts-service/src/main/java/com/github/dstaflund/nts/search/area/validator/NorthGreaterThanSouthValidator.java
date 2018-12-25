@@ -14,6 +14,7 @@ public class NorthGreaterThanSouthValidator implements ConstraintValidator<North
 
     @Override
     public boolean isValid(AreaSearchParams params, ConstraintValidatorContext ctx) {
+        if (params.getNorth() == null || params.getSouth() == null) return true;
         return params.getNorth() > params.getSouth();
     }
 }

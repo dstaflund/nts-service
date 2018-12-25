@@ -53,7 +53,7 @@ public class CoordinateSearchParams implements Serializable {
     private String filter;
 
     public String getName() {
-        return name == null ? null : name.trim().toUpperCase();
+        return name;
     }
 
     public void setName(String name) {
@@ -61,7 +61,7 @@ public class CoordinateSearchParams implements Serializable {
     }
 
     public String getSnippet() {
-        return snippet == null ? null : snippet.trim().toUpperCase();
+        return snippet;
     }
 
     public void setSnippet(String snippet) {
@@ -69,7 +69,7 @@ public class CoordinateSearchParams implements Serializable {
     }
 
     public String getParent() {
-        return parent == null ? null : parent.trim().toUpperCase();
+        return parent;
     }
 
     public void setParent(String parent) {
@@ -122,5 +122,21 @@ public class CoordinateSearchParams implements Serializable {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "CoordinateSearchParams(name=<%s>, snippet=<%s>, parent=<%s>, latitude=<%.2f>, longitude=<%.2f>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            name,
+            snippet,
+            parent,
+            latitude,
+            longitude,
+            limit,
+            offset,
+            sort,
+            filter
+        );
     }
 }

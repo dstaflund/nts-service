@@ -41,7 +41,7 @@ public class NameSearchParams implements Serializable {
     private String filter;
 
     public String getName() {
-        return name == null ? null : name.trim().toUpperCase();
+        return name;
     }
 
     public void setName(String name) {
@@ -49,7 +49,7 @@ public class NameSearchParams implements Serializable {
     }
 
     public String getSnippet() {
-        return snippet == null ? null : snippet.trim().toUpperCase();
+        return snippet;
     }
 
     public void setSnippet(String snippet) {
@@ -57,7 +57,7 @@ public class NameSearchParams implements Serializable {
     }
 
     public String getParent() {
-        return parent == null ? null : parent.trim().toUpperCase();
+        return parent;
     }
 
     public void setParent(String parent) {
@@ -94,5 +94,19 @@ public class NameSearchParams implements Serializable {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "NameSearchParams(name=<%s>, snippet=<%s>, parent=<%s>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            name,
+            snippet,
+            parent,
+            limit,
+            offset,
+            sort,
+            filter
+        );
     }
 }

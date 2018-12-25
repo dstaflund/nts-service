@@ -14,6 +14,7 @@ public class EastGreaterThanWestValidator implements ConstraintValidator<EastGre
 
     @Override
     public boolean isValid(AreaSearchParams params, ConstraintValidatorContext ctx) {
+        if (params.getEast() == null || params.getWest() == null) return true;
         return params.getEast() > params.getWest();
     }
 }

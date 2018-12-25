@@ -8,6 +8,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
 
 @Entity
 @Table(name="nts_maps", schema="public")
@@ -47,6 +52,10 @@ import java.util.Objects;
     )
 })
 public class NtsMap implements Serializable {
+    private static final Pattern sParentPattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])\\s*$");
+    private static final Pattern sNamePattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])(([01]?[0-9])?)\\s*$");
+    private static final String sParentFormat = "%03d%s";       // ex:  004B
+    private static final String sNameFormat = "%03d%s%02d";     // ex:  075P04
 
     public static class AreaQueryContract {
         public static final String QUERY_NAME = "find_maps_by_area";
@@ -172,7 +181,7 @@ public class NtsMap implements Serializable {
 
     @Override
     public String toString() {
-        return String.format(
+        return format(
             "NtsMap(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
             name,
             snippet,
@@ -182,5 +191,26 @@ public class NtsMap implements Serializable {
             east,
             west
         );
+    }
+
+    public static String formatName(String name){
+        if (name == null) return null;
+        Matcher m = sNamePattern.matcher(name.trim().toUpperCase());
+        if (! m.matches()) return name;
+        return m.group(3).trim().length() == 0
+            ? format(sParentFormat, parseInt(m.group(1)), m.group(2))
+            : format(sNameFormat, parseInt(m.group(1)), m.group(2), parseInt(m.group(3)));
+    }
+
+    public static String formatSnippet(String snippet){
+        if (snippet == null) return null;
+        return snippet.trim().toUpperCase();
+    }
+
+    public static String formatParent(String parent){
+        if (parent == null) return null;
+        Matcher m = sParentPattern.matcher(parent.trim().toUpperCase());
+        if (! m.matches()) return parent;
+        return format(sParentFormat, parseInt(m.group(1)), m.group(2));
     }
 }

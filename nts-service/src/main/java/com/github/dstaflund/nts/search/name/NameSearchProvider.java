@@ -19,9 +19,9 @@ public class NameSearchProvider {
         Session session = sessionFactory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
             session.getNamedQuery(NameQueryContract.QUERY_NAME)
-                .setParameter(NameQueryContract.PARAM_NAME, ctx.getName())
-                .setParameter(NameQueryContract.PARAM_SNIPPET, ctx.getSnippet())
-                .setParameter(NameQueryContract.PARAM_PARENT, ctx.getParent())
+                .setParameter(NameQueryContract.PARAM_NAME, NtsMap.formatName(ctx.getName()))
+                .setParameter(NameQueryContract.PARAM_SNIPPET, NtsMap.formatSnippet(ctx.getSnippet()))
+                .setParameter(NameQueryContract.PARAM_PARENT, NtsMap.formatParent(ctx.getParent()))
                 .setTimeout(sTimeoutInSeconds)
                 .setReadOnly(sReadOnlyInd)
                 .setCacheable(sCacheable)

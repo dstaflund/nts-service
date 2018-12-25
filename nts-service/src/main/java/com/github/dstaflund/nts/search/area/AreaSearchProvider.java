@@ -19,9 +19,9 @@ public class AreaSearchProvider {
         Session session = sessionFactory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
             session.getNamedQuery(AreaQueryContract.QUERY_NAME)
-                .setParameter(AreaQueryContract.PARAM_NAME, ctx.getName())
-                .setParameter(AreaQueryContract.PARAM_SNIPPET, ctx.getSnippet())
-                .setParameter(AreaQueryContract.PARAM_PARENT, ctx.getParent())
+                .setParameter(AreaQueryContract.PARAM_NAME, NtsMap.formatName(ctx.getName()))
+                .setParameter(AreaQueryContract.PARAM_SNIPPET, NtsMap.formatSnippet(ctx.getSnippet()))
+                .setParameter(AreaQueryContract.PARAM_PARENT, NtsMap.formatParent(ctx.getParent()))
                 .setParameter(AreaQueryContract.PARAM_NORTH, ctx.getNorth())
                 .setParameter(AreaQueryContract.PARAM_SOUTH, ctx.getSouth())
                 .setParameter(AreaQueryContract.PARAM_EAST, ctx.getEast())
