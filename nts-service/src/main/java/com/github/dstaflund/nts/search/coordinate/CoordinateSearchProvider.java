@@ -18,7 +18,7 @@ import static com.github.dstaflund.nts.search.NtsMap.formatName;
 import static com.github.dstaflund.nts.search.NtsMap.formatParent;
 import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
 
-public final class CoordinateSearchProvider {
+final class CoordinateSearchProvider {
     private static final int sTimeoutInSeconds = 5;
     private static final boolean sCacheable = true;
     private static final boolean sReadOnlyInd = true;
@@ -26,7 +26,7 @@ public final class CoordinateSearchProvider {
     private CoordinateSearchProvider(){
     }
 
-    public static List<NtsMap> findMapsByCoordinate(CoordinateSearchParams ctx) {
+    static List<NtsMap> findMapsByCoordinate(CoordinateSearchParams ctx) {
         SessionFactory factory = SessionFactoryListener.getSessionFactory();
         Session session = factory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->

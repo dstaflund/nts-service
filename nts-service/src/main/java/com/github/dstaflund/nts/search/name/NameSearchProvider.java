@@ -16,7 +16,7 @@ import static com.github.dstaflund.nts.search.NtsMap.formatName;
 import static com.github.dstaflund.nts.search.NtsMap.formatParent;
 import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
 
-public final class NameSearchProvider {
+final class NameSearchProvider {
     private static final int sTimeoutInSeconds = 5;
     private static final boolean sCacheable = true;
     private static final boolean sReadOnlyInd = true;
@@ -24,7 +24,7 @@ public final class NameSearchProvider {
     private NameSearchProvider(){
     }
 
-    public static List<NtsMap> findMapsByName(NameSearchParams ctx) {
+    static List<NtsMap> findMapsByName(NameSearchParams ctx) {
         SessionFactory factory = SessionFactoryListener.getSessionFactory();
         Session session = factory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->

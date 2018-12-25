@@ -52,7 +52,7 @@ import static java.lang.String.format;
     )
 })
 public class NtsMap implements Serializable {
-    private static final Pattern sParentPattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])\\s*$");
+    public static final Pattern sParentPattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])\\s*$");
     private static final Pattern sNamePattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])(([01]?[0-9])?)\\s*$");
     private static final String sParentFormat = "%03d%s";       // ex:  004B
     private static final String sNameFormat = "%03d%s%02d";     // ex:  075P04

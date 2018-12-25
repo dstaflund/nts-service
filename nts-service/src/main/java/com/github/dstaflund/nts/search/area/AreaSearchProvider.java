@@ -20,7 +20,7 @@ import static com.github.dstaflund.nts.search.NtsMap.formatName;
 import static com.github.dstaflund.nts.search.NtsMap.formatParent;
 import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
 
-public final class AreaSearchProvider {
+final class AreaSearchProvider {
     private static final int sTimeoutInSeconds = 5;
     private static final boolean sCacheable = true;
     private static final boolean sReadOnlyInd = true;
@@ -28,7 +28,7 @@ public final class AreaSearchProvider {
     private AreaSearchProvider(){
     }
 
-    public static List<NtsMap> findMapsByArea(AreaSearchParams ctx) {
+    static List<NtsMap> findMapsByArea(AreaSearchParams ctx) {
         SessionFactory factory = SessionFactoryListener.getSessionFactory();
         Session session = factory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
