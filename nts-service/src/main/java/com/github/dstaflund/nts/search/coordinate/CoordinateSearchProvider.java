@@ -2,28 +2,40 @@ package com.github.dstaflund.nts.search.coordinate;
 
 import com.github.dstaflund.nts.listener.SessionFactoryListener;
 import com.github.dstaflund.nts.search.NtsMap;
-import com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract;
 import com.github.dstaflund.nts.search.QueryExecuter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class CoordinateSearchProvider {
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_LATITUDE;
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_LONGITUDE;
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_NAME;
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_PARENT;
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_SNIPPET;
+import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.QUERY_NAME;
+import static com.github.dstaflund.nts.search.NtsMap.formatName;
+import static com.github.dstaflund.nts.search.NtsMap.formatParent;
+import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
+
+public final class CoordinateSearchProvider {
     private static final int sTimeoutInSeconds = 5;
     private static final boolean sCacheable = true;
     private static final boolean sReadOnlyInd = true;
 
-    public List<NtsMap> findMapsByCoordinate(CoordinateSearchParams ctx) {
-        SessionFactory sessionFactory = SessionFactoryListener.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
+    private CoordinateSearchProvider(){
+    }
+
+    public static List<NtsMap> findMapsByCoordinate(CoordinateSearchParams ctx) {
+        SessionFactory factory = SessionFactoryListener.getSessionFactory();
+        Session session = factory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
-            session.getNamedQuery(CoordinateQueryContract.QUERY_NAME)
-                .setParameter(CoordinateQueryContract.PARAM_NAME, NtsMap.formatName(ctx.getName()))
-                .setParameter(CoordinateQueryContract.PARAM_SNIPPET, NtsMap.formatSnippet(ctx.getSnippet()))
-                .setParameter(CoordinateQueryContract.PARAM_PARENT, NtsMap.formatParent(ctx.getParent()))
-                .setParameter(CoordinateQueryContract.PARAM_LATITUDE, ctx.getLatitude())
-                .setParameter(CoordinateQueryContract.PARAM_LONGITUDE, ctx.getLongitude())
+            session.getNamedQuery(QUERY_NAME)
+                .setParameter(PARAM_NAME, formatName(ctx.getName()))
+                .setParameter(PARAM_SNIPPET, formatSnippet(ctx.getSnippet()))
+                .setParameter(PARAM_PARENT, formatParent(ctx.getParent()))
+                .setParameter(PARAM_LATITUDE, ctx.getLatitude())
+                .setParameter(PARAM_LONGITUDE, ctx.getLongitude())
                 .setTimeout(sTimeoutInSeconds)
                 .setReadOnly(sReadOnlyInd)
                 .setCacheable(sCacheable)
@@ -31,13 +43,5 @@ public class CoordinateSearchProvider {
                 .setFirstResult(ctx.getOffset())
                 .setMaxResults(ctx.getLimit() + 1)
         );
-    }
-
-    public static CoordinateSearchProvider getInstance(){
-        return InstanceHelper.INSTANCE;
-    }
-
-    private static class InstanceHelper {
-        private static final CoordinateSearchProvider INSTANCE = new CoordinateSearchProvider();
     }
 }

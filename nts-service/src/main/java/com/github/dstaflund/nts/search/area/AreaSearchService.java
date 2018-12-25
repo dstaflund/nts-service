@@ -16,6 +16,6 @@ public class AreaSearchService {
 
     @GET
     public List<NtsMap> findMapsByArea(@Valid @BeanParam AreaSearchParams ctx){
-        return AreaSearchProvider.getInstance().findMapsByArea(ctx);
+        return AreaSearchProvider.findMapsByArea(ctx);
     }
 }

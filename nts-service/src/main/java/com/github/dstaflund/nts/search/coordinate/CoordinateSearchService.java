@@ -16,6 +16,6 @@ public class CoordinateSearchService {
 
     @GET
     public List<NtsMap> findMapsByCoordinate(@Valid @BeanParam CoordinateSearchParams ctx){
-        return CoordinateSearchProvider.getInstance().findMapsByCoordinate(ctx);
+        return CoordinateSearchProvider.findMapsByCoordinate(ctx);
     }
 }

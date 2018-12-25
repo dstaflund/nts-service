@@ -2,26 +2,36 @@ package com.github.dstaflund.nts.search.name;
 
 import com.github.dstaflund.nts.listener.SessionFactoryListener;
 import com.github.dstaflund.nts.search.NtsMap;
-import com.github.dstaflund.nts.search.NtsMap.NameQueryContract;
 import com.github.dstaflund.nts.search.QueryExecuter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
 
-public class NameSearchProvider {
+import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_NAME;
+import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_PARENT;
+import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_SNIPPET;
+import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.QUERY_NAME;
+import static com.github.dstaflund.nts.search.NtsMap.formatName;
+import static com.github.dstaflund.nts.search.NtsMap.formatParent;
+import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
+
+public final class NameSearchProvider {
     private static final int sTimeoutInSeconds = 5;
     private static final boolean sCacheable = true;
     private static final boolean sReadOnlyInd = true;
 
-    public List<NtsMap> findMapsByName(NameSearchParams ctx) {
-        SessionFactory sessionFactory = SessionFactoryListener.getSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
+    private NameSearchProvider(){
+    }
+
+    public static List<NtsMap> findMapsByName(NameSearchParams ctx) {
+        SessionFactory factory = SessionFactoryListener.getSessionFactory();
+        Session session = factory.getCurrentSession();
         return QueryExecuter.executeQuery(session, () ->
-            session.getNamedQuery(NameQueryContract.QUERY_NAME)
-                .setParameter(NameQueryContract.PARAM_NAME, NtsMap.formatName(ctx.getName()))
-                .setParameter(NameQueryContract.PARAM_SNIPPET, NtsMap.formatSnippet(ctx.getSnippet()))
-                .setParameter(NameQueryContract.PARAM_PARENT, NtsMap.formatParent(ctx.getParent()))
+            session.getNamedQuery(QUERY_NAME)
+                .setParameter(PARAM_NAME, formatName(ctx.getName()))
+                .setParameter(PARAM_SNIPPET, formatSnippet(ctx.getSnippet()))
+                .setParameter(PARAM_PARENT, formatParent(ctx.getParent()))
                 .setTimeout(sTimeoutInSeconds)
                 .setReadOnly(sReadOnlyInd)
                 .setCacheable(sCacheable)
@@ -29,13 +39,5 @@ public class NameSearchProvider {
                 .setFirstResult(ctx.getOffset())
                 .setMaxResults(ctx.getLimit() + 1)
         );
-    }
-
-    public static NameSearchProvider getInstance(){
-        return InstanceHelper.INSTANCE;
-    }
-
-    private static class InstanceHelper {
-        private static final NameSearchProvider INSTANCE = new NameSearchProvider();
     }
 }

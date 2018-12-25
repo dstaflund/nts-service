@@ -16,6 +16,6 @@ public class NameSearchService {
 
     @GET
     public List<NtsMap> findMapsByName(@Valid @BeanParam NameSearchParams ctx){
-        return NameSearchProvider.getInstance().findMapsByName(ctx);
+        return NameSearchProvider.findMapsByName(ctx);
     }
 }
