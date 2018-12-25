@@ -1,4 +1,4 @@
-package com.github.dstaflund.nts.model;
+package com.github.dstaflund.nts.search;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,17 +13,6 @@ import java.util.Objects;
 @Table(name="nts_maps", schema="public")
 @NamedQueries({
     @NamedQuery(
-        name = "find_maps_by_coordinate",
-        query = "  FROM NtsMap m"
-            + " WHERE (:name IS NULL OR m.name = :name)"
-            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
-            + "   AND (:parent IS NULL OR m.parent = :parent)"
-            + "   AND :latitude IS NOT NULL"
-            + "   AND :longitude IS NOT NULL"
-            + "   AND :latitude BETWEEN m.south AND m.north"
-            + "   AND :longitude BETWEEN m.west AND m.east"
-    ),
-    @NamedQuery(
         name = "find_maps_by_area",
         query = "  FROM NtsMap m"
             + " WHERE (:name IS NULL OR m.name = :name)"
@@ -37,6 +26,24 @@ import java.util.Objects;
             + "   AND m.north BETWEEN :south AND :north"
             + "   AND m.west BETWEEN :west AND :east"
             + "   AND m.east BETWEEN :west AND :east"
+    ),
+    @NamedQuery(
+        name = "find_maps_by_coordinate",
+        query = "  FROM NtsMap m"
+            + " WHERE (:name IS NULL OR m.name = :name)"
+            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
+            + "   AND (:parent IS NULL OR m.parent = :parent)"
+            + "   AND :latitude IS NOT NULL"
+            + "   AND :longitude IS NOT NULL"
+            + "   AND :latitude BETWEEN m.south AND m.north"
+            + "   AND :longitude BETWEEN m.west AND m.east"
+    ),
+    @NamedQuery(
+        name = "find_maps_by_name",
+        query = "  FROM NtsMap m"
+            + " WHERE (:name IS NULL OR m.name = :name)"
+            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
+            + "   AND (:parent IS NULL OR m.parent = :parent)"
     )
 })
 public class NtsMap implements Serializable {
@@ -61,6 +68,14 @@ public class NtsMap implements Serializable {
         public static final String PARAM_PARENT = "parent";
         public static final String PARAM_LATITUDE = "latitude";
         public static final String PARAM_LONGITUDE = "longitude";
+    }
+
+    public static class NameQueryContract {
+        public static final String QUERY_NAME = "find_maps_by_name";
+
+        public static final String PARAM_NAME = "name";
+        public static final String PARAM_SNIPPET = "snippet";
+        public static final String PARAM_PARENT = "parent";
     }
 
     @Id
@@ -158,14 +173,14 @@ public class NtsMap implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "NtsMap(name=<%s>, snippet=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, parent=<%s>)",
+            "NtsMap(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
             name,
             snippet,
+            parent,
             north,
             south,
             east,
-            west,
-            parent
+            west
         );
     }
 }

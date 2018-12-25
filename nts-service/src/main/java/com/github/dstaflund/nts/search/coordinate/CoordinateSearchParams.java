@@ -1,7 +1,7 @@
-package com.github.dstaflund.nts.model;
+package com.github.dstaflund.nts.search.coordinate;
 
+import com.github.dstaflund.nts.search.coordinate.validator.CoordinateDefined;
 import org.hibernate.validator.constraints.Length;
-
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -10,7 +10,8 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 
-public class CoordinateSearchContext implements Serializable {
+@CoordinateDefined(message = "Latitude and Longitude must both be defined")
+public class CoordinateSearchParams implements Serializable {
 
     @QueryParam("name")
     @Length(min = 2, max = 6, message = "Name must be between 2 to 6 characters in length")
@@ -21,6 +22,11 @@ public class CoordinateSearchContext implements Serializable {
     @Length(max = 40, message = "Snippet cannot be longer than 40 characters")
     private String snippet;
 
+    @QueryParam("parent")
+    @Length(min = 2, max = 4, message = "Parent must be between 2 to 4 characters in length")
+    @Pattern(regexp = "^\\s*[0-9]{1,3}[a-pA-P]\\s*$", message = "Parent must have the format of known NTS Series or NTS Area names (ex:  75P)")
+    private String parent;
+
     @QueryParam("lat")
     @DecimalMin(value = "40", message = "Latitude must not have a value smaller than 40")
     @DecimalMax(value = "87", message = "Latitude must not have a value larger than 87")
@@ -30,11 +36,6 @@ public class CoordinateSearchContext implements Serializable {
     @DecimalMin(value = "-144", message = "Longitude must not have a value smaller than -144")
     @DecimalMax(value = "-48", message = "Longitude must not have a value larger than -48")
     private Float longitude;
-
-    @QueryParam("parent")
-    @Length(min = 2, max = 4, message = "Parent must be between 2 to 4 characters in length")
-    @Pattern(regexp = "^\\s*[0-9]{1,3}[a-pA-P]\\s*$", message = "Parent must have the format of known NTS Series or NTS Area names (ex:  75P)")
-    private String parent;
 
     @DefaultValue("100")
     @QueryParam("limit")
@@ -52,7 +53,7 @@ public class CoordinateSearchContext implements Serializable {
     private String filter;
 
     public String getName() {
-        return name;
+        return name == null ? null : name.trim().toUpperCase();
     }
 
     public void setName(String name) {
@@ -60,11 +61,19 @@ public class CoordinateSearchContext implements Serializable {
     }
 
     public String getSnippet() {
-        return snippet;
+        return snippet == null ? null : snippet.trim().toUpperCase();
     }
 
     public void setSnippet(String snippet) {
         this.snippet = snippet;
+    }
+
+    public String getParent() {
+        return parent == null ? null : parent.trim().toUpperCase();
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public Float getLatitude() {
@@ -81,14 +90,6 @@ public class CoordinateSearchContext implements Serializable {
 
     public void setLongitude(Float longitude) {
         this.longitude = longitude;
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
     }
 
     public Integer getLimit() {
@@ -111,31 +112,15 @@ public class CoordinateSearchContext implements Serializable {
         return sort;
     }
 
-    public void setSort(String sortBy) {
-        this.sort = sortBy;
+    public void setSort(String sort) {
+        this.sort = sort;
     }
 
     public String getFilter() {
         return filter;
     }
 
-    public void setFilter(String filterBy) {
-        this.filter = filterBy;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "CoordinateSearchContext(name=<%s>, snippet=<%s>, lat=<%.2f>, lng=<%.2f>, parent=<%s>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
-                name,
-                snippet,
-                latitude,
-                longitude,
-                parent,
-                limit,
-                offset,
-                sort,
-                filter
-        );
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }

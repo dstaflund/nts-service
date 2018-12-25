@@ -13,6 +13,6 @@
         <property name="hibernate.connection.datasource">java:comp/env/jdbc/nts-map-db</property>
         <property name="hibernate.current_session_context_class">thread</property>
 
-        <mapping class="com.github.dstaflund.nts.model.NtsMap" />
+        <mapping class="com.github.dstaflund.nts.search.NtsMap" />
     </session-factory>
 </hibernate-configuration>
