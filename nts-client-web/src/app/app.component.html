@@ -2,25 +2,31 @@
 
 <!-- this creates a google agmMap on the page with the given lat/lng from -->
 <!-- the component as the initial center of the agmMap: -->
-<agm-map
-  #agmMap
-  [fullscreenControl]="fullScreenControl"
-  [latitude]="lat"
-  [longitude]="lng"
-  [mapTypeId]="mapTypeId"
-  [mapTypeControl]="mapTypeControl"
-  [zoom]="zoom"
-  (mapReady)="onMapReady($event)"
-  (mapClick)="onMapClick($event.coords)"
-  (boundsChange)="onBoundsChange($event)">
-  <ng-container>
-    <agm-rectangle
-      *ngFor="let ntsMap of ntsMaps"
-      [clickable]="false"
-      [north]="ntsMap.north"
-      [south]="ntsMap.south"
-      [east]="ntsMap.east"
-      [west]="ntsMap.west">
-    </agm-rectangle>
-  </ng-container>
-</agm-map>
+<div>
+  <agm-map
+    #agmMap
+    [fullscreenControl]="fullScreenControl"
+    [latitude]="lat"
+    [longitude]="lng"
+    [mapTypeId]="mapTypeId"
+    [mapTypeControl]="mapTypeControl"
+    [zoom]="zoom"
+    (mapReady)="onMapReady($event)"
+    (mapClick)="onMapClick($event.coords)"
+    (boundsChange)="onBoundsChange($event)">
+    <ng-container>
+      <agm-rectangle
+        *ngFor="let ntsMap of ntsMaps"
+        [clickable]="false"
+        [north]="ntsMap.north"
+        [south]="ntsMap.south"
+        [east]="ntsMap.east"
+        [west]="ntsMap.west">
+      </agm-rectangle>
+    </ng-container>
+  </agm-map>
+</div>
+<div>
+  <
+</div>
+
