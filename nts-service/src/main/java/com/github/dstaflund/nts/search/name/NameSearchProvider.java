@@ -1,10 +1,8 @@
 package com.github.dstaflund.nts.search.name;
 
-import com.github.dstaflund.nts.listener.SessionFactoryListener;
 import com.github.dstaflund.nts.search.NtsMap;
 import com.github.dstaflund.nts.search.QueryExecuter;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import java.util.List;
 
@@ -25,9 +23,7 @@ final class NameSearchProvider {
     }
 
     static List<NtsMap> findMapsByName(NameSearchParams ctx) {
-        SessionFactory factory = SessionFactoryListener.getSessionFactory();
-        Session session = factory.getCurrentSession();
-        return QueryExecuter.executeQuery(session, () ->
+        return QueryExecuter.executeQuery((Session session) ->
             session.getNamedQuery(QUERY_NAME)
                 .setParameter(PARAM_NAME, formatName(ctx.getName()))
                 .setParameter(PARAM_SNIPPET, formatSnippet(ctx.getSnippet()))
@@ -35,9 +31,6 @@ final class NameSearchProvider {
                 .setTimeout(sTimeoutInSeconds)
                 .setReadOnly(sReadOnlyInd)
                 .setCacheable(sCacheable)
-                .setFetchSize(ctx.getLimit() + 1)
-                .setFirstResult(ctx.getOffset())
-                .setMaxResults(ctx.getLimit() + 1)
         );
     }
 }

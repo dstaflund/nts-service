@@ -18,10 +18,12 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   west = -136.979113699991;
   lat = (this.north + this.south) / 2;
   lng = (this.east + this.west) / 2;
+
   fullScreenControl = true;
   zoom = 4;
   mapTypeId = 'hybrid';
   mapTypeControl = true;
+
   ntsMaps: NtsMap[] = [];
 
   constructor(private ntsMapService: NtsMapService) {

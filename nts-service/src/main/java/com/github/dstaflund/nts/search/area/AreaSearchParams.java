@@ -3,11 +3,9 @@ package com.github.dstaflund.nts.search.area;
 import com.github.dstaflund.nts.search.area.validator.AreaDefined;
 import com.github.dstaflund.nts.search.area.validator.EastGreaterThanWest;
 import com.github.dstaflund.nts.search.area.validator.NorthGreaterThanSouth;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Pattern;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
@@ -16,20 +14,6 @@ import java.io.Serializable;
 @EastGreaterThanWest(message = "East must be greater than West")
 @NorthGreaterThanSouth(message = "North must be greater than South")
 public class AreaSearchParams implements Serializable {
-
-    @QueryParam("name")
-    @Length(min = 2, max = 6, message = "Name must be between 2 to 6 characters in length")
-    @Pattern(regexp = "^\\s*[0-9]{1,3}[a-pA-P]([01]?[0-9])?\\s*$", message = "Name must have the format of known NTS Series, NTS Area, or NTS Sheet names (ex:  75P14)")
-    private String name;
-
-    @QueryParam("snippet")
-    @Length(max = 40, message = "Snippet cannot be longer than 40 characters")
-    private String snippet;
-
-    @QueryParam("parent")
-    @Length(min = 2, max = 4, message = "Parent must be between 2 to 4 characters in length")
-    @Pattern(regexp = "^\\s*[0-9]{1,3}[a-pA-P]\\s*$", message = "Parent must have the format of known NTS Series or NTS Area names (ex:  75P)")
-    private String parent;
 
     @QueryParam("n")
     @DecimalMin(value = "40", message = "North must not have a value smaller than 40")
@@ -51,7 +35,7 @@ public class AreaSearchParams implements Serializable {
     @DecimalMax(value = "-48", message = "West must not have a value larger than -48")
     private Float west;
 
-    @DefaultValue("100")
+    @DefaultValue("256")
     @QueryParam("limit")
     private Integer limit;
 
@@ -65,30 +49,6 @@ public class AreaSearchParams implements Serializable {
 
     @QueryParam("filter")
     private String filter;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSnippet() {
-        return snippet;
-    }
-
-    public void setSnippet(String snippet) {
-        this.snippet = snippet;
-    }
-
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
 
     public Float getNorth() {
         return north;
@@ -157,10 +117,7 @@ public class AreaSearchParams implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "AreaSearchParams(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
-            name,
-            snippet,
-            parent,
+            "AreaSearchParams(north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
             north,
             south,
             east,

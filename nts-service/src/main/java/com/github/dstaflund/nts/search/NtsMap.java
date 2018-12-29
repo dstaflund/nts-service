@@ -20,9 +20,7 @@ import static java.lang.String.format;
     @NamedQuery(
         name = "find_maps_by_area",
         query = "  FROM NtsMap m"
-            + " WHERE (:name IS NULL OR m.name = :name)"
-            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
-            + "   AND (:parent IS NULL OR m.parent = :parent)"
+            + " WHERE 1 = 1"
             + "   AND :north IS NOT NULL"
             + "   AND :south IS NOT NULL"
             + "   AND :east IS NOT NULL"
@@ -35,9 +33,7 @@ import static java.lang.String.format;
     @NamedQuery(
         name = "find_maps_by_coordinate",
         query = "  FROM NtsMap m"
-            + " WHERE (:name IS NULL OR m.name = :name)"
-            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
-            + "   AND (:parent IS NULL OR m.parent = :parent)"
+            + " WHERE 1 = 1"
             + "   AND :latitude IS NOT NULL"
             + "   AND :longitude IS NOT NULL"
             + "   AND :latitude BETWEEN m.south AND m.north"
@@ -46,7 +42,8 @@ import static java.lang.String.format;
     @NamedQuery(
         name = "find_maps_by_name",
         query = "  FROM NtsMap m"
-            + " WHERE (:name IS NULL OR m.name = :name)"
+            + " WHERE 1 = 1"
+            + "   AND (:name IS NULL OR m.name = :name)"
             + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
             + "   AND (:parent IS NULL OR m.parent = :parent)"
     )
@@ -60,9 +57,6 @@ public class NtsMap implements Serializable {
     public static class AreaQueryContract {
         public static final String QUERY_NAME = "find_maps_by_area";
 
-        public static final String PARAM_NAME = "name";
-        public static final String PARAM_SNIPPET = "snippet";
-        public static final String PARAM_PARENT = "parent";
         public static final String PARAM_NORTH = "north";
         public static final String PARAM_SOUTH = "south";
         public static final String PARAM_EAST = "east";
@@ -72,9 +66,6 @@ public class NtsMap implements Serializable {
     public static class CoordinateQueryContract {
         public static final String QUERY_NAME = "find_maps_by_coordinate";
 
-        public static final String PARAM_NAME = "name";
-        public static final String PARAM_SNIPPET = "snippet";
-        public static final String PARAM_PARENT = "parent";
         public static final String PARAM_LATITUDE = "latitude";
         public static final String PARAM_LONGITUDE = "longitude";
     }

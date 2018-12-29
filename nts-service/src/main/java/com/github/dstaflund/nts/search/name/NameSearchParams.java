@@ -25,21 +25,6 @@ public class NameSearchParams implements Serializable {
     @Pattern(regexp = "^\\s*[0-9]{1,3}[a-pA-P]\\s*$", message = "Parent must have the format of known NTS Series or NTS Area names (ex:  75P)")
     private String parent;
 
-    @DefaultValue("100")
-    @QueryParam("limit")
-    private Integer limit;
-
-    @DefaultValue("0")
-    @QueryParam("offset")
-    private Integer offset;
-
-    @DefaultValue("+name")
-    @QueryParam("sort")
-    private String sort;
-
-    @QueryParam("filter")
-    private String filter;
-
     public String getName() {
         return name;
     }
@@ -64,49 +49,13 @@ public class NameSearchParams implements Serializable {
         this.parent = parent;
     }
 
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
-
-    public String getFilter() {
-        return filter;
-    }
-
-    public void setFilter(String filter) {
-        this.filter = filter;
-    }
-
     @Override
     public String toString() {
         return String.format(
-            "NameSearchParams(name=<%s>, snippet=<%s>, parent=<%s>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            "NameSearchParams(name=<%s>, snippet=<%s>, parent=<%s>)",
             name,
             snippet,
-            parent,
-            limit,
-            offset,
-            sort,
-            filter
+            parent
         );
     }
 }
