@@ -1,5 +1,5 @@
 {
-  "name": "npm-client-web",
+  "name": "nts-client-web",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
