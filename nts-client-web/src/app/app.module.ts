@@ -7,6 +7,7 @@ import {FormsModule} from '@angular/forms';
 import {AgmCoreModule} from '@agm/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AutoCompleteModule, TabViewModule} from 'primeng/primeng';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    AutoCompleteModule,
+    TabViewModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,6 +2,9 @@ import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/c
 import {AgmMap, LatLngLiteral} from '@agm/core';
 import {NtsMapService} from './services/nts-map.service';
 import {NtsMap} from './models/nts-map';
+import {AreaSearchParams} from './models/area-search-params';
+import {CoordinateSearchParams} from './models/coordinate-search-params';
+import {NameSearchParams} from './models/name-search-params';
 
 @Component({
   selector: 'nts-root',
@@ -24,30 +27,80 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   mapTypeId = 'hybrid';
   mapTypeControl = true;
 
+  nameSearchParams = {} as NameSearchParams;
+  coordinateSearchParams = {} as CoordinateSearchParams;
+  areaSearchParams = {} as AreaSearchParams;
+
+  matchingNames: string[];
+  matchingSnippets: string[];
+  matchingParents: string[];
+  matchingLatitudes: number[];
+  matchingLongitudes: number[];
+  matchingNorthLatitudes: number[];
+  matchingSouthLatitudes: number[];
+  matchingEastLongitudes: number[];
+  matchingWestLongitudes: number[];
+
   ntsMaps: NtsMap[] = [];
 
   constructor(private ntsMapService: NtsMapService) {
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
   }
 
-  onMapReady($event): void {
-    console.log($event);
+  onMapReady(event) {
+    console.log(event);
   }
 
-  onMapClick(coords: LatLngLiteral): void {
+  onMapClick(coords: LatLngLiteral) {
     this.ntsMapService.getByCoord(coords.lat, coords.lng).subscribe( ntsMaps => {
       this.ntsMaps = ntsMaps;
     });
   }
 
-  onBoundsChange(event: any): void {
+  onBoundsChange(event) {
+  }
+
+  getMatchingNames(event) {
+    this.ntsMapService.getMatchingNames(event.query).subscribe(names => this.matchingNames = names);
+  }
+
+  getMatchingSnippets(event) {
+    this.ntsMapService.getMatchingSnippets(event.query).subscribe(snippets => this.matchingSnippets = snippets);
+  }
+
+  getMatchingParents(event) {
+    this.ntsMapService.getMatchingParents(event.query).subscribe(parents => this.matchingParents = parents);
+  }
+
+  getMatchingLatitudes(event) {
+    this.ntsMapService.getMatchingLatitudes(event.query).subscribe(latitudes => this.matchingLatitudes = latitudes);
+  }
+
+  getMatchingLongitudes(event) {
+    this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingLongitudes = longitudes);
+  }
+
+  getMatchingNorthLatitudes(event) {
+    this.ntsMapService.getMatchingLatitudes(event.query).subscribe(latitudes => this.matchingNorthLatitudes = latitudes);
+  }
+
+  getMatchingSouthLatitudes(event) {
+    this.ntsMapService.getMatchingLatitudes(event.query).subscribe(latitudes => this.matchingSouthLatitudes = latitudes);
+  }
+
+  getMatchingEastLongitudes(event) {
+    this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingEastLongitudes = longitudes);
+  }
+
+  getMatchingWestLongitudes(event) {
+    this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingWestLongitudes = longitudes);
   }
 }
