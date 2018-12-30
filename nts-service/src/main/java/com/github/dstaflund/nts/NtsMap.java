@@ -1,4 +1,4 @@
-package com.github.dstaflund.nts.search;
+package com.github.dstaflund.nts;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

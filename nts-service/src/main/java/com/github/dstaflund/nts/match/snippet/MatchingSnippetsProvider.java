@@ -1,12 +1,12 @@
 package com.github.dstaflund.nts.match.snippet;
 
-import com.github.dstaflund.nts.search.QueryExecuter;
+import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
 import java.util.List;
 
-import static com.github.dstaflund.nts.search.NtsMap.MatchingSnippetsContract.PARAM_QUERY;
-import static com.github.dstaflund.nts.search.NtsMap.MatchingSnippetsContract.QUERY_NAME;
+import static com.github.dstaflund.nts.NtsMap.MatchingSnippetsContract.PARAM_QUERY;
+import static com.github.dstaflund.nts.NtsMap.MatchingSnippetsContract.QUERY_NAME;
 
 final class MatchingSnippetsProvider {
 

@@ -1,18 +1,18 @@
 package com.github.dstaflund.nts.search.name;
 
-import com.github.dstaflund.nts.search.NtsMap;
-import com.github.dstaflund.nts.search.QueryExecuter;
+import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
 import java.util.List;
 
-import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_NAME;
-import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_PARENT;
-import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.PARAM_SNIPPET;
-import static com.github.dstaflund.nts.search.NtsMap.NameQueryContract.QUERY_NAME;
-import static com.github.dstaflund.nts.search.NtsMap.formatName;
-import static com.github.dstaflund.nts.search.NtsMap.formatParent;
-import static com.github.dstaflund.nts.search.NtsMap.formatSnippet;
+import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_NAME;
+import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_PARENT;
+import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_SNIPPET;
+import static com.github.dstaflund.nts.NtsMap.NameQueryContract.QUERY_NAME;
+import static com.github.dstaflund.nts.NtsMap.formatName;
+import static com.github.dstaflund.nts.NtsMap.formatParent;
+import static com.github.dstaflund.nts.NtsMap.formatSnippet;
 
 final class NameSearchProvider {
 

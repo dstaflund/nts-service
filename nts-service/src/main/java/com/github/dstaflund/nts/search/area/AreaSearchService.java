@@ -1,6 +1,6 @@
 package com.github.dstaflund.nts.search.area;
 
-import com.github.dstaflund.nts.search.NtsMap;
+import com.github.dstaflund.nts.NtsMap;
 
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;

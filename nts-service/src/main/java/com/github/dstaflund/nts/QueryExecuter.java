@@ -1,4 +1,4 @@
-package com.github.dstaflund.nts.search;
+package com.github.dstaflund.nts;
 
 import com.github.dstaflund.nts.listener.SessionFactoryListener;
 import org.apache.logging.log4j.LogManager;

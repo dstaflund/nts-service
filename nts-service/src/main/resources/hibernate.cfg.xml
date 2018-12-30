@@ -14,6 +14,6 @@
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.generate_statistics">false</property>
 
-        <mapping class="com.github.dstaflund.nts.search.NtsMap" />
+        <mapping class="com.github.dstaflund.nts.NtsMap" />
     </session-factory>
 </hibernate-configuration>

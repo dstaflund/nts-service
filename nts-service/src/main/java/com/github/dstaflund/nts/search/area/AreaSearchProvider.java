@@ -1,16 +1,16 @@
 package com.github.dstaflund.nts.search.area;
 
-import com.github.dstaflund.nts.search.NtsMap;
-import com.github.dstaflund.nts.search.QueryExecuter;
+import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
 import java.util.List;
 
-import static com.github.dstaflund.nts.search.NtsMap.AreaQueryContract.PARAM_EAST;
-import static com.github.dstaflund.nts.search.NtsMap.AreaQueryContract.PARAM_NORTH;
-import static com.github.dstaflund.nts.search.NtsMap.AreaQueryContract.PARAM_SOUTH;
-import static com.github.dstaflund.nts.search.NtsMap.AreaQueryContract.PARAM_WEST;
-import static com.github.dstaflund.nts.search.NtsMap.AreaQueryContract.QUERY_NAME;
+import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_EAST;
+import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_NORTH;
+import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_SOUTH;
+import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_WEST;
+import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.QUERY_NAME;
 
 final class AreaSearchProvider {
 

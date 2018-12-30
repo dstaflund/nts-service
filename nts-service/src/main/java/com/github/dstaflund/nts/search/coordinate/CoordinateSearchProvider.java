@@ -1,14 +1,14 @@
 package com.github.dstaflund.nts.search.coordinate;
 
-import com.github.dstaflund.nts.search.NtsMap;
-import com.github.dstaflund.nts.search.QueryExecuter;
+import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
 import java.util.List;
 
-import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_LATITUDE;
-import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.PARAM_LONGITUDE;
-import static com.github.dstaflund.nts.search.NtsMap.CoordinateQueryContract.QUERY_NAME;
+import static com.github.dstaflund.nts.NtsMap.CoordinateQueryContract.PARAM_LATITUDE;
+import static com.github.dstaflund.nts.NtsMap.CoordinateQueryContract.PARAM_LONGITUDE;
+import static com.github.dstaflund.nts.NtsMap.CoordinateQueryContract.QUERY_NAME;
 
 final class CoordinateSearchProvider {
 
