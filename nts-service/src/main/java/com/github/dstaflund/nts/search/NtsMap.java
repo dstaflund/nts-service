@@ -46,6 +46,51 @@ import static java.lang.String.format;
             + "   AND (:name IS NULL OR m.name = :name)"
             + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
             + "   AND (:parent IS NULL OR m.parent = :parent)"
+    ),
+    @NamedQuery(
+        name = "find_matching_names",
+        query = "   SELECT DISTINCT m.name"
+              + "     FROM NtsMap m"
+              + "    WHERE m.name LIKE :query"
+              + " ORDER BY m.name ASC"
+    ),
+    @NamedQuery(
+        name = "find_matching_snippets",
+        query = "   SELECT DISTINCT m.snippet"
+              + "     FROM NtsMap m"
+              + "    WHERE m.snippet LIKE :query"
+              + " ORDER BY m.snippet ASC"
+    ),
+    @NamedQuery(
+        name = "find_matching_parents",
+        query = "   SELECT DISTINCT m.parent"
+              + "     FROM NtsMap m"
+              + "    WHERE m.parent LIKE :query"
+              + " ORDER BY m.parent ASC"
+    ),
+    @NamedQuery(
+        name = "find_matching_north_latitudes",
+        query = "   SELECT DISTINCT m.north"
+            + "     FROM NtsMap m"
+            + "    WHERE m.north BETWEEN :low AND :high"
+    ),
+    @NamedQuery(
+        name = "find_matching_south_latitudes",
+        query = "   SELECT DISTINCT m.south"
+            + "     FROM NtsMap m"
+            + "    WHERE m.south BETWEEN :low AND :high"
+    ),
+    @NamedQuery(
+        name = "find_matching_east_longitudes",
+        query = "   SELECT DISTINCT m.east"
+            + "     FROM NtsMap m"
+            + "    WHERE m.east BETWEEN :low AND :high"
+    ),
+    @NamedQuery(
+        name = "find_matching_west_longitudes",
+        query = "   SELECT DISTINCT m.west"
+            + "     FROM NtsMap m"
+            + "    WHERE m.west BETWEEN :low AND :high"
     )
 })
 public class NtsMap implements Serializable {
@@ -56,7 +101,6 @@ public class NtsMap implements Serializable {
 
     public static class AreaQueryContract {
         public static final String QUERY_NAME = "find_maps_by_area";
-
         public static final String PARAM_NORTH = "north";
         public static final String PARAM_SOUTH = "south";
         public static final String PARAM_EAST = "east";
@@ -65,17 +109,54 @@ public class NtsMap implements Serializable {
 
     public static class CoordinateQueryContract {
         public static final String QUERY_NAME = "find_maps_by_coordinate";
-
         public static final String PARAM_LATITUDE = "latitude";
         public static final String PARAM_LONGITUDE = "longitude";
     }
 
     public static class NameQueryContract {
         public static final String QUERY_NAME = "find_maps_by_name";
-
         public static final String PARAM_NAME = "name";
         public static final String PARAM_SNIPPET = "snippet";
         public static final String PARAM_PARENT = "parent";
+    }
+
+    public static class MatchingNamesContract {
+        public static final String QUERY_NAME = "find_matching_names";
+        public static final String PARAM_QUERY = "query";
+    }
+
+    public static class MatchingSnippetsContract {
+        public static final String QUERY_NAME = "find_matching_snippets";
+        public static final String PARAM_QUERY = "query";
+    }
+
+    public static class MatchingParentsContract {
+        public static final String QUERY_NAME = "find_matching_parents";
+        public static final String PARAM_QUERY = "query";
+    }
+
+    public static class MatchingNorthLatitudesContract {
+        public static final String QUERY_NAME = "find_matching_north_latitudes";
+        public static final String PARAM_LOW = "low";
+        public static final String PARAM_HIGH = "high";
+    }
+
+    public static class MatchingSouthLatitudesContract {
+        public static final String QUERY_NAME = "find_matching_south_latitudes";
+        public static final String PARAM_LOW = "low";
+        public static final String PARAM_HIGH = "high";
+    }
+
+    public static class MatchingEastLongitudesContract {
+        public static final String QUERY_NAME = "find_matching_east_longitudes";
+        public static final String PARAM_LOW = "low";
+        public static final String PARAM_HIGH = "high";
+    }
+
+    public static class MatchingWestLongitudesContract {
+        public static final String QUERY_NAME = "find_matching_west_longitudes";
+        public static final String PARAM_LOW = "low";
+        public static final String PARAM_HIGH = "high";
     }
 
     @Id

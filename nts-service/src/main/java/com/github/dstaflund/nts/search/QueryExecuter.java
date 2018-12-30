@@ -12,21 +12,27 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class QueryExecuter {
-   private static final Logger sLogger = LogManager.getLogger(QueryExecuter.class);
+    private static final Logger sLogger = LogManager.getLogger(QueryExecuter.class);
+    private static final int sTimeoutInSeconds = 5;
+    private static final boolean sCacheable = true;
+    private static final boolean sReadOnlyInd = true;
 
     private QueryExecuter(){
     }
 
     @SuppressWarnings("unchecked")
-    public static List<NtsMap> executeQuery(Function<Session, Query> supplier){
+    public static <T> List<T> executeQuery(Function<Session, Query> supplier){
         try(Session session = SessionFactoryListener.getSessionFactory().getCurrentSession()) {
             Transaction tx = null;
 
             try {
                 tx = session.beginTransaction();
-                Query query = supplier.apply(session);
+                Query query = supplier.apply(session)
+                    .setTimeout(sTimeoutInSeconds)
+                    .setReadOnly(sReadOnlyInd)
+                    .setCacheable(sCacheable);
                 sLogger.debug("Query Start:  " + LocalDateTime.now());
-                List<NtsMap> maps = query.list();
+                List<T> maps = query.list();
                 sLogger.debug("Query End:  " + LocalDateTime.now());
                 sLogger.debug("Result Count:  " + maps.size());
                 tx.commit();
