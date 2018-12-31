@@ -7,7 +7,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Function;
 
@@ -31,10 +30,7 @@ public final class QueryExecuter {
                     .setTimeout(sTimeoutInSeconds)
                     .setReadOnly(sReadOnlyInd)
                     .setCacheable(sCacheable);
-                sLogger.debug("Query Start:  " + LocalDateTime.now());
                 List<T> maps = query.list();
-                sLogger.debug("Query End:  " + LocalDateTime.now());
-                sLogger.debug("Result Count:  " + maps.size());
                 tx.commit();
                 return maps;
             }
@@ -48,7 +44,6 @@ public final class QueryExecuter {
             }
         }
 
-        sLogger.debug("Returning null");
         return null;
     }
 }

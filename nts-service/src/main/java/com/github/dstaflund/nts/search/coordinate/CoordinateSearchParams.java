@@ -1,12 +1,9 @@
 package com.github.dstaflund.nts.search.coordinate;
 
 import com.github.dstaflund.nts.search.coordinate.validator.CoordinateDefined;
-import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Pattern;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 

@@ -4,7 +4,6 @@ import com.github.dstaflund.nts.search.name.validator.NameSnippetParentDefined;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Pattern;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 

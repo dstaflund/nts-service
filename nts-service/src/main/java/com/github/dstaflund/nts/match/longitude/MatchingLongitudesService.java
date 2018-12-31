@@ -1,11 +1,11 @@
 package com.github.dstaflund.nts.match.longitude;
 
+import javax.validation.Valid;
+import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import java.util.Collections;
 import java.util.List;
 
 @Path("/matching/longitudes")
@@ -13,8 +13,7 @@ import java.util.List;
 public class MatchingLongitudesService {
 
     @GET
-    public List<Float> getMatchingLongitudes(@QueryParam("query") String query){
-        if (query == null || query.trim().isEmpty()) return Collections.emptyList();
-        return MatchingLongitudesProvider.findMatchingLongitudes(query);
+    public List<Float> getMatchingLongitudes(@Valid @BeanParam MatchingLongitudesParams ctx){
+        return MatchingLongitudesProvider.findMatchingLongitudes(ctx);
     }
 }

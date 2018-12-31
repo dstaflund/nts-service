@@ -3,22 +3,21 @@ package com.github.dstaflund.nts;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 
 @Entity
 @Table(name="nts_maps", schema="public")
 @NamedQueries({
     @NamedQuery(
-        name = "find_maps_by_area",
+        name = "NtsMap.ByArea",
         query = "  FROM NtsMap m"
             + " WHERE 1 = 1"
             + "   AND :north IS NOT NULL"
@@ -31,7 +30,7 @@ import static java.lang.String.format;
             + "   AND m.east BETWEEN :west AND :east"
     ),
     @NamedQuery(
-        name = "find_maps_by_coordinate",
+        name = "NtsMap.ByCoordinate",
         query = "  FROM NtsMap m"
             + " WHERE 1 = 1"
             + "   AND :latitude IS NOT NULL"
@@ -40,67 +39,71 @@ import static java.lang.String.format;
             + "   AND :longitude BETWEEN m.west AND m.east"
     ),
     @NamedQuery(
-        name = "find_maps_by_name",
+        name = "NtsMap.ByName",
         query = "  FROM NtsMap m"
             + " WHERE 1 = 1"
-            + "   AND (:name IS NULL OR m.name = :name)"
+            + "   AND (:name IS NULL OR m.searchName = :name)"
             + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
-            + "   AND (:parent IS NULL OR m.parent = :parent)"
+            + "   AND (:parent IS NULL OR m.searchParent = :parent)"
     ),
     @NamedQuery(
-        name = "find_matching_names",
+        name = "NtsMap.MatchingNames",
         query = "   SELECT DISTINCT m.name"
               + "     FROM NtsMap m"
-              + "    WHERE m.name LIKE :query"
+              + "    WHERE m.searchName LIKE :query"
               + " ORDER BY m.name ASC"
     ),
     @NamedQuery(
-        name = "find_matching_snippets",
+        name = "NtsMap.MatchingSnippets",
         query = "   SELECT DISTINCT m.snippet"
               + "     FROM NtsMap m"
               + "    WHERE m.snippet LIKE :query"
               + " ORDER BY m.snippet ASC"
     ),
     @NamedQuery(
-        name = "find_matching_parents",
+        name = "NtsMap.MatchingParents",
         query = "   SELECT DISTINCT m.parent"
               + "     FROM NtsMap m"
-              + "    WHERE m.parent LIKE :query"
+              + "    WHERE m.searchParent LIKE :query"
               + " ORDER BY m.parent ASC"
+    )
+})
+
+// These are native queries since HQL doesn't support UNION yet
+@NamedNativeQueries({
+    @NamedNativeQuery(
+        name = "NtsMap.MatchingLatitudes",
+        query = " SELECT DISTINCT x.latitude"
+            + "     FROM ("
+            + "             SELECT north AS latitude"
+            + "               FROM nts_maps"
+            + "              WHERE search_north LIKE ?"
+            + "              UNION"
+            + "             SELECT south AS latitude"
+            + "               FROM nts_maps"
+            + "              WHERE search_south LIKE ?"
+            + "          ) x"
+            + " ORDER BY x.latitude ASC"
     ),
-    @NamedQuery(
-        name = "find_matching_north_latitudes",
-        query = "   SELECT DISTINCT m.north"
-            + "     FROM NtsMap m"
-            + "    WHERE m.north BETWEEN :low AND :high"
-    ),
-    @NamedQuery(
-        name = "find_matching_south_latitudes",
-        query = "   SELECT DISTINCT m.south"
-            + "     FROM NtsMap m"
-            + "    WHERE m.south BETWEEN :low AND :high"
-    ),
-    @NamedQuery(
-        name = "find_matching_east_longitudes",
-        query = "   SELECT DISTINCT m.east"
-            + "     FROM NtsMap m"
-            + "    WHERE m.east BETWEEN :low AND :high"
-    ),
-    @NamedQuery(
-        name = "find_matching_west_longitudes",
-        query = "   SELECT DISTINCT m.west"
-            + "     FROM NtsMap m"
-            + "    WHERE m.west BETWEEN :low AND :high"
+    @NamedNativeQuery(
+        name = "NtsMap.MatchingLongitudes",
+        query = " SELECT DISTINCT x.longitude"
+            + "     FROM ("
+            + "             SELECT east AS longitude"
+            + "               FROM nts_maps"
+            + "              WHERE search_east LIKE ?"
+            + "              UNION"
+            + "             SELECT west AS longitude"
+            + "               FROM nts_maps"
+            + "              WHERE search_west LIKE ?"
+            + "          ) x"
+            + " ORDER BY x.longitude ASC"
     )
 })
 public class NtsMap implements Serializable {
-    public static final Pattern sParentPattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])\\s*$");
-    private static final Pattern sNamePattern = Pattern.compile("^\\s*([0-9]{1,3})([A-P])(([01]?[0-9])?)\\s*$");
-    private static final String sParentFormat = "%03d%s";       // ex:  004B
-    private static final String sNameFormat = "%03d%s%02d";     // ex:  075P04
 
     public static class AreaQueryContract {
-        public static final String QUERY_NAME = "find_maps_by_area";
+        public static final String QUERY_NAME = "NtsMap.ByArea";
         public static final String PARAM_NORTH = "north";
         public static final String PARAM_SOUTH = "south";
         public static final String PARAM_EAST = "east";
@@ -108,55 +111,39 @@ public class NtsMap implements Serializable {
     }
 
     public static class CoordinateQueryContract {
-        public static final String QUERY_NAME = "find_maps_by_coordinate";
+        public static final String QUERY_NAME = "NtsMap.ByCoordinate";
         public static final String PARAM_LATITUDE = "latitude";
         public static final String PARAM_LONGITUDE = "longitude";
     }
 
     public static class NameQueryContract {
-        public static final String QUERY_NAME = "find_maps_by_name";
+        public static final String QUERY_NAME = "NtsMap.ByName";
         public static final String PARAM_NAME = "name";
         public static final String PARAM_SNIPPET = "snippet";
         public static final String PARAM_PARENT = "parent";
     }
 
     public static class MatchingNamesContract {
-        public static final String QUERY_NAME = "find_matching_names";
+        public static final String QUERY_NAME = "NtsMap.MatchingNames";
         public static final String PARAM_QUERY = "query";
     }
 
     public static class MatchingSnippetsContract {
-        public static final String QUERY_NAME = "find_matching_snippets";
+        public static final String QUERY_NAME = "NtsMap.MatchingSnippets";
         public static final String PARAM_QUERY = "query";
     }
 
     public static class MatchingParentsContract {
-        public static final String QUERY_NAME = "find_matching_parents";
+        public static final String QUERY_NAME = "NtsMap.MatchingParents";
         public static final String PARAM_QUERY = "query";
     }
 
-    public static class MatchingNorthLatitudesContract {
-        public static final String QUERY_NAME = "find_matching_north_latitudes";
-        public static final String PARAM_LOW = "low";
-        public static final String PARAM_HIGH = "high";
+    public static class MatchingLatitudesContract {
+        public static final String QUERY_NAME = "NtsMap.MatchingLatitudes";
     }
 
-    public static class MatchingSouthLatitudesContract {
-        public static final String QUERY_NAME = "find_matching_south_latitudes";
-        public static final String PARAM_LOW = "low";
-        public static final String PARAM_HIGH = "high";
-    }
-
-    public static class MatchingEastLongitudesContract {
-        public static final String QUERY_NAME = "find_matching_east_longitudes";
-        public static final String PARAM_LOW = "low";
-        public static final String PARAM_HIGH = "high";
-    }
-
-    public static class MatchingWestLongitudesContract {
-        public static final String QUERY_NAME = "find_matching_west_longitudes";
-        public static final String PARAM_LOW = "low";
-        public static final String PARAM_HIGH = "high";
+    public static class MatchingLongitudesContract {
+        public static final String QUERY_NAME = "NtsMap.MatchingLongitudes";
     }
 
     @Id
@@ -165,6 +152,9 @@ public class NtsMap implements Serializable {
 
     @Column(name = "snippet", insertable = false, updatable = false, length = 40)
     private String snippet;
+
+    @Column(name = "parent", insertable = false, updatable = false, length = 6)
+    private String parent;
 
     @Column(name = "north", insertable = false, updatable = false, precision = 5, scale = 2)
     private float north;
@@ -178,8 +168,23 @@ public class NtsMap implements Serializable {
     @Column(name = "west", insertable = false, updatable = false, precision = 5, scale = 2)
     private float west;
 
-    @Column(name = "parent", insertable = false, updatable = false, length = 6)
-    private String parent;
+    @Column(name = "search_name", unique = true, insertable = false, updatable = false, length = 6)
+    private String searchName;
+
+    @Column(name = "search_parent", insertable = false, updatable = false, length = 4)
+    private String searchParent;
+
+    @Column(name = "search_north", insertable = false, updatable = false, length = 7)
+    private String searchNorth;
+
+    @Column(name = "search_south", insertable = false, updatable = false, length = 7)
+    private String searchSouth;
+
+    @Column(name = "search_east", insertable = false, updatable = false, length = 7)
+    private String searchEast;
+
+    @Column(name = "search_west", insertable = false, updatable = false, length = 7)
+    private String searchWest;
 
     public String getName() {
         return name;
@@ -237,6 +242,54 @@ public class NtsMap implements Serializable {
         this.parent = parent;
     }
 
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public String getSearchParent() {
+        return searchParent;
+    }
+
+    public void setSearchParent(String searchParent) {
+        this.searchParent = searchParent;
+    }
+
+    public String getSearchNorth() {
+        return searchNorth;
+    }
+
+    public void setSearchNorth(String searchNorth) {
+        this.searchNorth = searchNorth;
+    }
+
+    public String getSearchSouth() {
+        return searchSouth;
+    }
+
+    public void setSearchSouth(String searchSouth) {
+        this.searchSouth = searchSouth;
+    }
+
+    public String getSearchEast() {
+        return searchEast;
+    }
+
+    public void setSearchEast(String searchEast) {
+        this.searchEast = searchEast;
+    }
+
+    public String getSearchWest() {
+        return searchWest;
+    }
+
+    public void setSearchWest(String searchWest) {
+        this.searchWest = searchWest;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(name);
@@ -263,26 +316,5 @@ public class NtsMap implements Serializable {
             east,
             west
         );
-    }
-
-    public static String formatName(String name){
-        if (name == null) return null;
-        Matcher m = sNamePattern.matcher(name.trim().toUpperCase());
-        if (! m.matches()) return name;
-        return m.group(3).trim().length() == 0
-            ? format(sParentFormat, parseInt(m.group(1)), m.group(2))
-            : format(sNameFormat, parseInt(m.group(1)), m.group(2), parseInt(m.group(3)));
-    }
-
-    public static String formatSnippet(String snippet){
-        if (snippet == null) return null;
-        return snippet.trim().toUpperCase();
-    }
-
-    public static String formatParent(String parent){
-        if (parent == null) return null;
-        Matcher m = sParentPattern.matcher(parent.trim().toUpperCase());
-        if (! m.matches()) return parent;
-        return format(sParentFormat, parseInt(m.group(1)), m.group(2));
     }
 }
