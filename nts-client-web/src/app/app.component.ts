@@ -42,6 +42,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   matchingWestLongitudes: number[];
 
   ntsMaps: NtsMap[] = [];
+  searchResults: NtsMap[] = [];
 
   constructor(private ntsMapService: NtsMapService) {
   }
@@ -60,8 +61,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMapClick(coords: LatLngLiteral) {
-    this.ntsMapService.getByCoord(coords.lat, coords.lng).subscribe( ntsMaps => {
+    const coordParams = { lat: coords.lat, lng: coords.lng } as CoordinateSearchParams;
+    this.ntsMapService.getByCoord(coordParams).subscribe( ntsMaps => {
       this.ntsMaps = ntsMaps;
+      this.searchResults = ntsMaps;
     });
   }
 
@@ -102,5 +105,56 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getMatchingWestLongitudes(event) {
     this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingWestLongitudes = longitudes);
+  }
+
+  getByName() {
+    this.ntsMapService.getByName(this.nameSearchParams).subscribe(maps => this.searchResults = maps);
+  }
+
+  enableSearchByName(): boolean {
+    return true;
+    // return this.nameSearchParams.isValid();
+  }
+
+  getByCoordinate() {
+    this.ntsMapService.getByCoord(this.coordinateSearchParams).subscribe(maps => this.searchResults = maps);
+  }
+
+  enableSearchByCoordinate(): boolean {
+    return true;
+    // return this.coordinateSearchParams.isValid();
+  }
+
+  getByArea() {
+    this.ntsMapService.getByArea(this.areaSearchParams).subscribe(maps => this.searchResults = maps);
+  }
+
+  enableSearchByArea(): boolean {
+    return true;
+    // return this.areaSearchParams.isValid();
+  }
+
+  mapSelected(ntsMap: NtsMap) {
+    console.log(ntsMap);
+    this.lat = (ntsMap.north + ntsMap.south) / 2;
+    this.lng = (ntsMap.east + ntsMap.west) / 2;
+  }
+
+  clearNameValues() {
+    this.nameSearchParams.name = null;
+    this.nameSearchParams.snippet = null;
+    this.nameSearchParams.parent = null;
+  }
+
+  clearCoordinateValues() {
+    this.coordinateSearchParams.lat = null;
+    this.coordinateSearchParams.lng = null;
+  }
+
+  clearAreaValues() {
+    this.areaSearchParams.north = null;
+    this.areaSearchParams.south = null;
+    this.areaSearchParams.east = null;
+    this.areaSearchParams.west = null;
   }
 }

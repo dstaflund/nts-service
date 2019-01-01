@@ -42,9 +42,9 @@ import static java.lang.String.format;
         name = "NtsMap.ByName",
         query = "  FROM NtsMap m"
             + " WHERE 1 = 1"
-            + "   AND (:name IS NULL OR m.searchName = :name)"
-            + "   AND (:snippet IS NULL OR m.snippet = :snippet)"
-            + "   AND (:parent IS NULL OR m.searchParent = :parent)"
+            + "   AND (:name IS NULL OR m.searchName LIKE :name)"
+            + "   AND (:snippet IS NULL OR m.snippet LIKE :snippet)"
+            + "   AND (:parent IS NULL OR m.searchParent LIKE :parent)"
     ),
     @NamedQuery(
         name = "NtsMap.MatchingNames",

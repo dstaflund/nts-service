@@ -1,157 +1,194 @@
 <h1>{{ title }}</h1>
-
 <div>
-  <agm-map
-    #agmMap
-    [fullscreenControl]="fullScreenControl"
-    [latitude]="lat"
-    [longitude]="lng"
-    [mapTypeId]="mapTypeId"
-    [mapTypeControl]="mapTypeControl"
-    [zoom]="zoom"
-    (mapReady)="onMapReady($event)"
-    (mapClick)="onMapClick($event.coords)"
-    (boundsChange)="onBoundsChange($event)">
-    <ng-container>
-      <agm-rectangle
-        *ngFor="let ntsMap of ntsMaps"
-        [clickable]="false"
-        [north]="ntsMap.north"
-        [south]="ntsMap.south"
-        [east]="ntsMap.east"
-        [west]="ntsMap.west">
-      </agm-rectangle>
-    </ng-container>
-  </agm-map>
+  <div class="ui-g-4">
+    <agm-map
+      #agmMap
+      [fullscreenControl]="fullScreenControl"
+      [latitude]="lat"
+      [longitude]="lng"
+      [mapTypeId]="mapTypeId"
+      [mapTypeControl]="mapTypeControl"
+      [zoom]="zoom"
+      (mapReady)="onMapReady($event)"
+      (mapClick)="onMapClick($event.coords)"
+      (boundsChange)="onBoundsChange($event)">
+      <ng-container>
+        <agm-rectangle
+          *ngFor="let ntsMap of ntsMaps"
+          [clickable]="false"
+          [north]="ntsMap.north"
+          [south]="ntsMap.south"
+          [east]="ntsMap.east"
+          [west]="ntsMap.west">
+        </agm-rectangle>
+      </ng-container>
+    </agm-map>
+  </div>
+  <div class="ui-g-8">
+    <div>
+      <p-tabView>
+        <p-tabPanel header="Search By Name">
+          <div>Enter the name, title, or parent you want to search on:</div>
+          <label for="nameInput">
+            Name
+            <p-autoComplete
+              id="nameInput"
+              [(ngModel)]="nameSearchParams.name"
+              [suggestions]="matchingNames"
+              (completeMethod)="getMatchingNames($event)"
+              [size]="10"
+              placeholder="ex:  72P14"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="snippetInput">
+            Title
+            <p-autoComplete
+              id="snippetInput"
+              [(ngModel)]="nameSearchParams.snippet"
+              [suggestions]="matchingSnippets"
+              (completeMethod)="getMatchingSnippets($event)"
+              [size]="20"
+              placeholder="ex:  LANIGAN"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="parentInput">
+            Parent
+            <p-autoComplete
+              id="parentInput"
+              [(ngModel)]="nameSearchParams.parent"
+              [suggestions]="matchingParents"
+              (completeMethod)="getMatchingParents($event)"
+              [size]="10"
+              placeholder="ex:  72P"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <button type="submit" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
+          <button type="reset" (click)="clearNameValues()">Clear</button>
+        </p-tabPanel>
+        <p-tabPanel header="Search By Coordinate">
+          <div>Enter the coordinate you want to search on:</div>
+          <label for="latitudeInput">
+            Latitude
+            <p-autoComplete
+              id="latitudeInput"
+              [(ngModel)]="coordinateSearchParams.lat"
+              [suggestions]="matchingLatitudes"
+              (completeMethod)="getMatchingLatitudes($event)"
+              [size]="10"
+              placeholder="ex:  51.75"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="longitudeInput">
+            Longitude
+            <p-autoComplete
+              id="longitudeInput"
+              [(ngModel)]="coordinateSearchParams.lng"
+              [suggestions]="matchingLongitudes"
+              (completeMethod)="getMatchingLongitudes($event)"
+              [size]="10"
+              placeholder="ex:  -105.25"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <button type="submit" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
+          <button type="reset" (click)="clearCoordinateValues()">Clear</button>
+        </p-tabPanel>
+        <p-tabPanel header="Search By Area">
+          <div>Enter the corners of the geographic area you want to search on:</div>
+          <label for="northInput">
+            North
+            <p-autoComplete
+              id="northInput"
+              [(ngModel)]="areaSearchParams.north"
+              [suggestions]="matchingNorthLatitudes"
+              (completeMethod)="getMatchingNorthLatitudes($event)"
+              [size]="10"
+              placeholder="ex:  52"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="southInput">
+            South
+            <p-autoComplete
+              id="southInput"
+              [(ngModel)]="areaSearchParams.south"
+              [suggestions]="matchingSouthLatitudes"
+              (completeMethod)="getMatchingSouthLatitudes($event)"
+              [size]="10"
+              placeholder="ex:  51.75"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="eastInput">
+            East
+            <p-autoComplete
+              id="eastInput"
+              [(ngModel)]="areaSearchParams.east"
+              [suggestions]="matchingEastLongitudes"
+              (completeMethod)="getMatchingEastLongitudes($event)"
+              [size]="10"
+              placeholder="ex:  -105"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <label for="westInput">
+            West
+            <p-autoComplete
+              id="westInput"
+              [(ngModel)]="areaSearchParams.west"
+              [suggestions]="matchingWestLongitudes"
+              (completeMethod)="getMatchingWestLongitudes($event)"
+              [size]="10"
+              placeholder="ex:  -105.50"
+              emptyMessage="No maps found"
+              [minLength]="1">
+            </p-autoComplete>
+          </label>
+          <button type="submit" (click)="getByArea()" [disabled]="! enableSearchByArea()">Search</button>
+          <button type="reset" (click)="clearAreaValues()">Clear</button>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+    <div>
+      <p-table [value]="searchResults">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th>Snippet</th>
+            <th>Parent</th>
+            <th>North</th>
+            <th>South</th>
+            <th>East</th>
+            <th>West</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-ntsMap>
+          <tr (click)="mapSelected(ntsMap)">
+            <td>{{ntsMap.name}}</td>
+            <td>{{ntsMap.snippet}}</td>
+            <td>{{ntsMap.parent}}</td>
+            <td>{{ntsMap.north}}</td>
+            <td>{{ntsMap.south}}</td>
+            <td>{{ntsMap.east}}</td>
+            <td>{{ntsMap.west}}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <div>Search found no maps</div>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
 </div>
-<div>
-  <p-tabView>
-    <p-tabPanel header="Search By Name">
-      <div>Enter the name, title, or parent you want to search on:</div>
-      <label for="nameInput">
-        Name
-        <p-autoComplete
-          id="nameInput"
-          [(ngModel)]="nameSearchParams.name"
-          [suggestions]="matchingNames"
-          (completeMethod)="getMatchingNames($event)"
-          [size]="20"
-          placeholder="Map Name (ex:  72P14)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="snippetInput">
-        Title
-        <p-autoComplete
-          id="snippetInput"
-          [(ngModel)]="nameSearchParams.snippet"
-          [suggestions]="matchingSnippets"
-          (completeMethod)="getMatchingSnippets($event)"
-          [size]="20"
-          placeholder="Map Title (ex:  LANIGAN)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="parentInput">
-        Parent
-        <p-autoComplete
-          id="parentInput"
-          [(ngModel)]="nameSearchParams.parent"
-          [suggestions]="matchingParents"
-          (completeMethod)="getMatchingParents($event)"
-          [size]="20"
-          placeholder="Parent Name (ex:  72P)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-    </p-tabPanel>
-    <p-tabPanel header="Search By Coordinate">
-      <div>Enter the coordinate you want to search on:</div>
-      <label for="latitudeInput">
-        Latitude
-        <p-autoComplete
-          id="latitudeInput"
-          [(ngModel)]="coordinateSearchParams.lat"
-          [suggestions]="matchingLatitudes"
-          (completeMethod)="getMatchingLatitudes($event)"
-          [size]="20"
-          placeholder="Latitude (ex:  51.75)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="longitudeInput">
-        Longitude
-        <p-autoComplete
-          id="longitudeInput"
-          [(ngModel)]="coordinateSearchParams.lng"
-          [suggestions]="matchingLongitudes"
-          (completeMethod)="getMatchingLongitudes($event)"
-          [size]="20"
-          placeholder="Longitude (ex:  -105.25)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-    </p-tabPanel>
-    <p-tabPanel header="Search By Area">
-      <div>Enter the corners of the geographic area you want to search on:</div>
-      <label for="northInput">
-        North
-        <p-autoComplete
-          id="northInput"
-          [(ngModel)]="areaSearchParams.north"
-          [suggestions]="matchingNorthLatitudes"
-          (completeMethod)="getMatchingNorthLatitudes($event)"
-          [size]="20"
-          placeholder="North Lat (ex:  52)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="southInput">
-        South
-        <p-autoComplete
-          id="southInput"
-          [(ngModel)]="areaSearchParams.south"
-          [suggestions]="matchingSouthLatitudes"
-          (completeMethod)="getMatchingSouthLatitudes($event)"
-          [size]="20"
-          placeholder="South Lat (ex:  51.75)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="eastInput">
-        East
-        <p-autoComplete
-          id="eastInput"
-          [(ngModel)]="areaSearchParams.east"
-          [suggestions]="matchingEastLongitudes"
-          (completeMethod)="getMatchingEastLongitudes($event)"
-          [size]="20"
-          placeholder="East Lng (ex:  -105)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-      <label for="westInput">
-        West
-        <p-autoComplete
-          id="westInput"
-          [(ngModel)]="areaSearchParams.west"
-          [suggestions]="matchingWestLongitudes"
-          (completeMethod)="getMatchingWestLongitudes($event)"
-          [size]="20"
-          placeholder="West Lng (ex:  -105.50)"
-          emptyMessage="No maps found"
-          [minLength]="1">
-        </p-autoComplete>
-      </label>
-    </p-tabPanel>
-  </p-tabView>
-</div>
-
