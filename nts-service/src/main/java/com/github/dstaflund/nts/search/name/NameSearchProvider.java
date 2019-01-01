@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_NAME;
-import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_PARENT;
 import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_SNIPPET;
 import static com.github.dstaflund.nts.NtsMap.NameQueryContract.QUERY_NAME;
 
@@ -25,7 +24,6 @@ final class NameSearchProvider {
                 .getNamedQuery(QUERY_NAME)
                 .setParameter(PARAM_NAME, scrubMapName(ctx.getName()))
                 .setParameter(PARAM_SNIPPET, scrubSnippet(ctx.getSnippet()))
-                .setParameter(PARAM_PARENT, scrubMapName(ctx.getParent()))
         );
     }
 
@@ -36,9 +34,6 @@ final class NameSearchProvider {
         String result = Integer.parseInt(m.group(1))
              + (m.group(2) == null ? "%" : m.group(2))
              + (m.group(3) == null ? "%" : (m.group(3).length() == 1 ? "0" + m.group(3) : m.group(3)));
-        System.out.println("===================");
-        System.out.println(result);
-        System.out.println("===================");
         return result;
     }
 

@@ -23,13 +23,6 @@ public class NameSearchParams implements Serializable {
     )
     private String snippet;
 
-    @QueryParam("parent")
-    @Pattern(
-        regexp = "^([0-9]{0,3})?[a-pA-P]?\\s*$",
-        message = "Parent must have the format of known NTS Series or NTS Area names (ex:  75P)"
-    )
-    private String parent;
-
     public String getName() {
         return name;
     }
@@ -46,21 +39,12 @@ public class NameSearchParams implements Serializable {
         this.snippet = snippet;
     }
 
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
     @Override
     public String toString() {
         return String.format(
-            "NameSearchParams(name=<%s>, snippet=<%s>, parent=<%s>)",
+            "NameSearchParams(name=<%s>, snippet=<%s>)",
             name,
-            snippet,
-            parent
+            snippet
         );
     }
 }

@@ -44,7 +44,6 @@ import static java.lang.String.format;
             + " WHERE 1 = 1"
             + "   AND (:name IS NULL OR m.searchName LIKE :name)"
             + "   AND (:snippet IS NULL OR m.snippet LIKE :snippet)"
-            + "   AND (:parent IS NULL OR m.searchParent LIKE :parent)"
     ),
     @NamedQuery(
         name = "NtsMap.MatchingNames",
@@ -59,13 +58,6 @@ import static java.lang.String.format;
               + "     FROM NtsMap m"
               + "    WHERE m.snippet LIKE :query"
               + " ORDER BY m.snippet ASC"
-    ),
-    @NamedQuery(
-        name = "NtsMap.MatchingParents",
-        query = "   SELECT DISTINCT m.parent"
-              + "     FROM NtsMap m"
-              + "    WHERE m.searchParent LIKE :query"
-              + " ORDER BY m.parent ASC"
     )
 })
 
@@ -120,7 +112,6 @@ public class NtsMap implements Serializable {
         public static final String QUERY_NAME = "NtsMap.ByName";
         public static final String PARAM_NAME = "name";
         public static final String PARAM_SNIPPET = "snippet";
-        public static final String PARAM_PARENT = "parent";
     }
 
     public static class MatchingNamesContract {
@@ -130,11 +121,6 @@ public class NtsMap implements Serializable {
 
     public static class MatchingSnippetsContract {
         public static final String QUERY_NAME = "NtsMap.MatchingSnippets";
-        public static final String PARAM_QUERY = "query";
-    }
-
-    public static class MatchingParentsContract {
-        public static final String QUERY_NAME = "NtsMap.MatchingParents";
         public static final String PARAM_QUERY = "query";
     }
 

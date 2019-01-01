@@ -9,7 +9,6 @@ import {AreaSearchParams} from '../models/area-search-params';
 const sBaseUri = 'http://127.0.0.1:8080/Gradle___com_github_dstaflund___nts_service_1_0_SNAPSHOT_war__exploded_/json';
 const sGetMatchingNames = sBaseUri + '/matching/names';
 const sGetMatchingSnippets = sBaseUri + '/matching/snippets';
-const sGetMatchingParents = sBaseUri + '/matching/parents';
 const sGetMatchingLatitudes = sBaseUri + '/matching/latitudes';
 const sGetMatchingLongitudes = sBaseUri + '/matching/longitudes';
 const sByNameUrl = sBaseUri + '/nts/by/name';
@@ -37,11 +36,6 @@ export class NtsMapService {
     return this.http.get<string[]>(sGetMatchingSnippets, { params });
   }
 
-  getMatchingParents(query: any): Observable<string[]> {
-    const params = new HttpParams().set('parent', String(query));
-    return this.http.get<string[]>(sGetMatchingParents, { params });
-  }
-
   getMatchingLatitudes(query: any): Observable<number[]> {
     const params = new HttpParams().set('latitude', String(query));
     return this.http.get<number[]>(sGetMatchingLatitudes, { params });
@@ -61,19 +55,12 @@ export class NtsMapService {
 
   getByName(searchParams: NameSearchParams): Observable<NtsMap[]> {
     let params = new HttpParams();
-    console.log(! NtsMapService.isEmpty(searchParams.name));
     if (! NtsMapService.isEmpty(searchParams.name)) {
       params = params.set('name', searchParams.name);
     }
-    console.log(! NtsMapService.isEmpty(searchParams.snippet));
     if (! NtsMapService.isEmpty(searchParams.snippet)) {
       params = params.set('snippet', searchParams.snippet);
     }
-    console.log(! NtsMapService.isEmpty(searchParams.parent));
-    if (! NtsMapService.isEmpty(searchParams.parent)) {
-      params = params.set('parent', searchParams.parent);
-    }
-    console.log(params);
     return this.http.get<NtsMap[]>(sByNameUrl, { params});
   }
 

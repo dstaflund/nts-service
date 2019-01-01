@@ -33,7 +33,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   matchingNames: string[];
   matchingSnippets: string[];
-  matchingParents: string[];
   matchingLatitudes: number[];
   matchingLongitudes: number[];
   matchingNorthLatitudes: number[];
@@ -77,10 +76,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getMatchingSnippets(event) {
     this.ntsMapService.getMatchingSnippets(event.query).subscribe(snippets => this.matchingSnippets = snippets);
-  }
-
-  getMatchingParents(event) {
-    this.ntsMapService.getMatchingParents(event.query).subscribe(parents => this.matchingParents = parents);
   }
 
   getMatchingLatitudes(event) {
@@ -143,7 +138,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   clearNameValues() {
     this.nameSearchParams.name = null;
     this.nameSearchParams.snippet = null;
-    this.nameSearchParams.parent = null;
   }
 
   clearCoordinateValues() {

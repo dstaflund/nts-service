@@ -16,7 +16,6 @@ public class NameSnippetParentDefinedValidator implements ConstraintValidator<Na
    public boolean isValid(NameSearchParams params, ConstraintValidatorContext ctx) {
       sLogger.debug("Validating " + params);
       return params.getName() != null
-          || params.getSnippet() != null
-          || params.getParent() != null;
+          || params.getSnippet() != null;
    }
 }
