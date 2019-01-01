@@ -55,19 +55,6 @@
               [minLength]="1">
             </p-autoComplete>
           </label>
-          <label for="parentInput">
-            Parent
-            <p-autoComplete
-              id="parentInput"
-              [(ngModel)]="nameSearchParams.parent"
-              [suggestions]="matchingParents"
-              (completeMethod)="getMatchingParents($event)"
-              [size]="10"
-              placeholder="ex:  72P"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
           <button type="submit" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
           <button type="reset" (click)="clearNameValues()">Clear</button>
         </p-tabPanel>
@@ -102,7 +89,7 @@
           <button type="submit" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
           <button type="reset" (click)="clearCoordinateValues()">Clear</button>
         </p-tabPanel>
-        <p-tabPanel header="Search By Area">
+        <p-tabPanel header="Search By Bounded Area">
           <div>Enter the corners of the geographic area you want to search on:</div>
           <label for="northInput">
             North
@@ -162,11 +149,11 @@
       </p-tabView>
     </div>
     <div>
-      <p-table [value]="searchResults">
+      <p-table [value]="searchResults" [paginator]="true" [rows]="12" pageLinks="10">
         <ng-template pTemplate="header">
           <tr>
             <th>Name</th>
-            <th>Snippet</th>
+            <th>Title</th>
             <th>Parent</th>
             <th>North</th>
             <th>South</th>
