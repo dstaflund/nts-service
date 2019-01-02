@@ -7,7 +7,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 
-public class PagingData implements Serializable {
+public class PagingParams implements Serializable {
 
     @NotNull(message = "Limit must be specified")
     @Min(value = 1, message = "Limit must be greater than 0")
@@ -53,7 +53,7 @@ public class PagingData implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "PagingData(limit=<%d>, offset=<%d>, sort=<%s>, data=<%s>)",
+            "PagingParams(limit=<%d>, offset=<%d>, sort=<%s>, data=<%s>)",
             limit,
             offset,
             sort

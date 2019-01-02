@@ -1,7 +1,7 @@
 package com.github.dstaflund.nts.search.area;
 
 import com.github.dstaflund.nts.NtsMap;
-import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
@@ -20,7 +20,7 @@ final class AreaSearchProvider {
     private AreaSearchProvider(){
     }
 
-    static PagedResponse<List<NtsMap>> findMapsByArea(PagingData paging, AreaSearchParams req) {
+    static PagedResponse<List<NtsMap>> findMapsByArea(PagingParams paging, AreaSearchParams req) {
         return PagedResponse.newInstance(paging, getCount(req), getData(paging, req));
     }
 
@@ -36,7 +36,7 @@ final class AreaSearchProvider {
         );
     }
 
-    private static List<NtsMap> getData(PagingData paging, AreaSearchParams req) {
+    private static List<NtsMap> getData(PagingParams paging, AreaSearchParams req) {
         return QueryExecuter.executeQuery(
             paging,
             (Session session) ->

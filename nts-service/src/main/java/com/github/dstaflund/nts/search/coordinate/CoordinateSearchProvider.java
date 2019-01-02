@@ -2,7 +2,7 @@ package com.github.dstaflund.nts.search.coordinate;
 
 import com.github.dstaflund.nts.NtsMap;
 import com.github.dstaflund.nts.NtsMap.CoordinateQueryContract;
-import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
@@ -18,7 +18,7 @@ final class CoordinateSearchProvider {
     private CoordinateSearchProvider(){
     }
 
-    static PagedResponse<List<NtsMap>> findMapsByCoordinate(PagingData paging, CoordinateSearchParams req) {
+    static PagedResponse<List<NtsMap>> findMapsByCoordinate(PagingParams paging, CoordinateSearchParams req) {
         return PagedResponse.newInstance(paging, getCount(req), getData(paging, req));
     }
 
@@ -32,7 +32,7 @@ final class CoordinateSearchProvider {
         );
     }
 
-    private static List<NtsMap> getData(PagingData paging, CoordinateSearchParams req) {
+    private static List<NtsMap> getData(PagingParams paging, CoordinateSearchParams req) {
         return QueryExecuter.executeQuery(
             paging,
             (Session session) ->

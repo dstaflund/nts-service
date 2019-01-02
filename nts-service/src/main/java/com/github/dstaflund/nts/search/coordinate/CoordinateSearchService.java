@@ -1,7 +1,7 @@
 package com.github.dstaflund.nts.search.coordinate;
 
 import com.github.dstaflund.nts.NtsMap;
-import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 
 import javax.validation.Valid;
@@ -18,7 +18,7 @@ public class CoordinateSearchService {
 
     @GET
     public PagedResponse<List<NtsMap>> findMapsByCoordinate(
-        @Valid @BeanParam PagingData paging,
+        @Valid @BeanParam PagingParams paging,
         @Valid @BeanParam CoordinateSearchParams req
     ){
         return CoordinateSearchProvider.findMapsByCoordinate(paging, req);

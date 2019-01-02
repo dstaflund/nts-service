@@ -1,7 +1,7 @@
 package com.github.dstaflund.nts.search.name;
 
 import com.github.dstaflund.nts.NtsMap;
-import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
@@ -20,7 +20,7 @@ final class NameSearchProvider {
     private NameSearchProvider(){
     }
 
-    static PagedResponse<List<NtsMap>> findMapsByName(PagingData paging, NameSearchParams req) {
+    static PagedResponse<List<NtsMap>> findMapsByName(PagingParams paging, NameSearchParams req) {
         return PagedResponse.newInstance(paging, getCount(req), getData(paging, req));
     }
 
@@ -34,7 +34,7 @@ final class NameSearchProvider {
         );
     }
 
-    private static List<NtsMap> getData(PagingData paging, NameSearchParams req) {
+    private static List<NtsMap> getData(PagingParams paging, NameSearchParams req) {
         return QueryExecuter.executeQuery(
             paging,
             (Session session) ->

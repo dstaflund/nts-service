@@ -61,7 +61,7 @@ public class PagedResponse<T> implements Serializable {
         );
     }
 
-    public static <T> PagedResponse<T> newInstance(PagingData paging, Integer count, T data){
+    public static <T> PagedResponse<T> newInstance(PagingParams paging, Integer count, T data){
         PagedResponse<T> res = new PagedResponse<>();
         paging.setLimit(paging.getLimit());
         paging.setOffset(paging.getOffset());

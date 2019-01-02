@@ -48,7 +48,7 @@ public final class QueryExecuter {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> executeQuery(PagingData paging, Function<Session, Query> supplier){
+    public static <T> List<T> executeQuery(PagingParams paging, Function<Session, Query> supplier){
         try(Session session = SessionFactoryListener.getSessionFactory().getCurrentSession()) {
             Transaction tx = null;
 
