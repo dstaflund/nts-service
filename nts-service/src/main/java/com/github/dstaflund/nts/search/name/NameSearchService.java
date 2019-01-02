@@ -1,6 +1,8 @@
 package com.github.dstaflund.nts.search.name;
 
 import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagedResponse;
 
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -15,7 +17,10 @@ import java.util.List;
 public class NameSearchService {
 
     @GET
-    public List<NtsMap> findMapsByName(@Valid @BeanParam NameSearchParams ctx){
-        return NameSearchProvider.findMapsByName(ctx);
+    public PagedResponse<List<NtsMap>> findMapsByName(
+        @Valid @BeanParam PagingData paging,
+        @Valid @BeanParam NameSearchParams req
+    ){
+        return NameSearchProvider.findMapsByName(paging, req);
     }
 }

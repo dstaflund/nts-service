@@ -46,4 +46,59 @@ public final class QueryExecuter {
 
         return null;
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> executeQuery(PagingData paging, Function<Session, Query> supplier){
+        try(Session session = SessionFactoryListener.getSessionFactory().getCurrentSession()) {
+            Transaction tx = null;
+
+            try {
+                tx = session.beginTransaction();
+                Query query = supplier.apply(session)
+                    .setTimeout(sTimeoutInSeconds)
+                    .setReadOnly(sReadOnlyInd)
+                    .setCacheable(sCacheable)
+                    .setFirstResult(paging.getOffset())
+                    .setFetchSize(paging.getLimit())
+                    .setMaxResults(paging.getLimit());
+                List<T> maps = query.list();
+                tx.commit();
+                return maps;
+            }
+
+            catch (Exception e) {
+                sLogger.error("Error:  ", e);
+                if (tx != null) {
+                    tx.rollback();
+                    throw e;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static int getResultCount(Function<Session, Query> supplier){
+        try(Session session = SessionFactoryListener.getSessionFactory().getCurrentSession()) {
+            Transaction tx = null;
+
+            try {
+                tx = session.beginTransaction();
+                Query query = supplier.apply(session).setTimeout(sTimeoutInSeconds);
+                int count = ((Long) query.uniqueResult()).intValue();
+                tx.commit();
+                return count;
+            }
+
+            catch (Exception e) {
+                sLogger.error("Error:  ", e);
+                if (tx != null) {
+                    tx.rollback();
+                    throw e;
+                }
+            }
+        }
+
+        return 0;
+    }
 }

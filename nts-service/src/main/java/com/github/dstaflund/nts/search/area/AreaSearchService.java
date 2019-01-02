@@ -1,6 +1,8 @@
 package com.github.dstaflund.nts.search.area;
 
 import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.PagingData;
+import com.github.dstaflund.nts.PagedResponse;
 
 import javax.validation.Valid;
 import javax.ws.rs.BeanParam;
@@ -15,7 +17,10 @@ import java.util.List;
 public class AreaSearchService {
 
     @GET
-    public List<NtsMap> findMapsByArea(@Valid @BeanParam AreaSearchParams ctx){
-        return AreaSearchProvider.findMapsByArea(ctx);
+    public PagedResponse<List<NtsMap>> findMapsByArea(
+        @Valid @BeanParam PagingData paging,
+        @Valid @BeanParam AreaSearchParams req
+    ){
+        return AreaSearchProvider.findMapsByArea(paging, req);
     }
 }

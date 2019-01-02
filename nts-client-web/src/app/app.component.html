@@ -26,7 +26,7 @@
   </div>
   <div class="ui-g-8">
     <div>
-      <p-tabView>
+      <p-tabView (onChange)="tabChanged($event)">
         <p-tabPanel header="Search By Name">
           <div>Enter the name or title you want to search on:</div>
           <label for="nameInput">
@@ -56,7 +56,7 @@
             </p-autoComplete>
           </label>
           <button type="submit" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
-          <button type="reset" (click)="clearNameValues()">Clear</button>
+          <button type="reset" (click)="nameSearchParams.clear()">Clear</button>
         </p-tabPanel>
         <p-tabPanel header="Search By Coordinate">
           <div>Enter the coordinate you want to search on:</div>
@@ -87,10 +87,10 @@
             </p-autoComplete>
           </label>
           <button type="submit" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
-          <button type="reset" (click)="clearCoordinateValues()">Clear</button>
+          <button type="reset" (click)="coordinateSearchParams.clear()">Clear</button>
         </p-tabPanel>
         <p-tabPanel header="Search By Bounded Area">
-          <div>Enter the corners of the geographic area you want to search on:</div>
+          <div>Enter the bounds of the area you want to search on:</div>
           <label for="northInput">
             North
             <p-autoComplete
@@ -144,12 +144,20 @@
             </p-autoComplete>
           </label>
           <button type="submit" (click)="getByArea()" [disabled]="! enableSearchByArea()">Search</button>
-          <button type="reset" (click)="clearAreaValues()">Clear</button>
+          <button type="reset" (click)="areaSearchParams.clear()">Clear</button>
         </p-tabPanel>
       </p-tabView>
     </div>
     <div>
-      <p-table [value]="searchResults" [paginator]="true" [rows]="12" pageLinks="10">
+      <p-table
+        [value]="searchResults"
+        [paginator]="true"
+        [rows]="10"
+        pageLinks="10"
+        [lazy]="true"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        (onLazyLoad)="lazyLoadMaps($event)">
         <ng-template pTemplate="header">
           <tr>
             <th>Name</th>

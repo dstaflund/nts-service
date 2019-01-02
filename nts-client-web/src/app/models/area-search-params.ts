@@ -1,8 +1,15 @@
-export interface AreaSearchParams {
+export class AreaSearchParams {
   north?: number;
   south?: number;
   east?: number;
   west?: number;
+
+  clear() {
+    this.north = null;
+    this.south = null;
+    this.east = null;
+    this.west = null;
+  }
   //
   // isValid(): boolean {
   //   return this.northEntered()

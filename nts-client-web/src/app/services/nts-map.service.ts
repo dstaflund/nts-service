@@ -5,6 +5,8 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {NameSearchParams} from '../models/name-search-params';
 import {CoordinateSearchParams} from '../models/coordinate-search-params';
 import {AreaSearchParams} from '../models/area-search-params';
+import {PagedResponse} from '../models/paged-response';
+import {PagingData} from '../models/paging-data';
 
 const sBaseUri = 'http://127.0.0.1:8080/Gradle___com_github_dstaflund___nts_service_1_0_SNAPSHOT_war__exploded_/json';
 const sGetMatchingNames = sBaseUri + '/matching/names';
@@ -46,30 +48,42 @@ export class NtsMapService {
     return this.http.get<number[]>(sGetMatchingLongitudes, { params });
   }
 
-  getByCoord(searchParams:  CoordinateSearchParams): Observable<NtsMap[]> {
-    const params = new HttpParams()
-      .set('lat', String(searchParams.lat))
-      .set('lng', String(searchParams.lng));
-    return this.http.get<NtsMap[]>(sByCoordUrl, { params });
+  getByCoord(pagingData: PagingData, req: CoordinateSearchParams): Observable<PagedResponse<NtsMap[]>> {
+    let params = new HttpParams()
+      .set('lat', String(req.lat))
+      .set('lng', String(req.lng));
+    params = this.setPagingData(params, pagingData);
+    return this.http.get<PagedResponse<NtsMap[]>>(sByCoordUrl, { params });
   }
 
-  getByName(searchParams: NameSearchParams): Observable<NtsMap[]> {
+  getByName(pagingData: PagingData, req: NameSearchParams): Observable<PagedResponse<NtsMap[]>> {
     let params = new HttpParams();
-    if (! NtsMapService.isEmpty(searchParams.name)) {
-      params = params.set('name', searchParams.name);
+    if (! NtsMapService.isEmpty(req.name)) {
+      params = params.set('name', req.name);
     }
-    if (! NtsMapService.isEmpty(searchParams.snippet)) {
-      params = params.set('snippet', searchParams.snippet);
+    if (! NtsMapService.isEmpty(req.snippet)) {
+      params = params.set('snippet', req.snippet);
     }
-    return this.http.get<NtsMap[]>(sByNameUrl, { params});
+    params = this.setPagingData(params, pagingData);
+    return this.http.get<PagedResponse<NtsMap[]>>(sByNameUrl, { params});
   }
 
-  getByArea(searchParams: AreaSearchParams): Observable<NtsMap[]> {
-    const params = new HttpParams()
-      .set('n', String(searchParams.north))
-      .set('s', String(searchParams.south))
-      .set('e', String(searchParams.east))
-      .set('w', String(searchParams.west));
-    return this.http.get<NtsMap[]>(sByAreaUrl, { params });
+  getByArea(pagingData: PagingData, req: AreaSearchParams): Observable<PagedResponse<NtsMap[]>> {
+    let params = new HttpParams()
+      .set('n', String(req.north))
+      .set('s', String(req.south))
+      .set('e', String(req.east))
+      .set('w', String(req.west));
+    params = this.setPagingData(params, pagingData);
+    return this.http.get<PagedResponse<NtsMap[]>>(sByAreaUrl, { params });
+  }
+
+  setPagingData(params: HttpParams, pagingData: PagingData) {
+    params = params.set('limit', String(pagingData.limit));
+    params = params.set('offset', String(pagingData.offset));
+    if (pagingData.sort && pagingData.sort.trim().length > 0) {
+      params = params.set('sort', pagingData.sort);
+    }
+    return params;
   }
 }

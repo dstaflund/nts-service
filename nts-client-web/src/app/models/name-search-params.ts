@@ -5,4 +5,9 @@ export class NameSearchParams {
   // isValid(): boolean {
   //   return false;
   // }
+
+  clear() {
+    this.name = null;
+    this.snippet = null;
+  }
 }

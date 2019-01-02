@@ -6,7 +6,6 @@ import com.github.dstaflund.nts.search.area.validator.NorthGreaterThanSouth;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
 
@@ -34,18 +33,6 @@ public class AreaSearchParams implements Serializable {
     @DecimalMin(value = "-144", message = "West must not have a value smaller than -144")
     @DecimalMax(value = "-48", message = "West must not have a value larger than -48")
     private Float west;
-
-    @DefaultValue("256")
-    @QueryParam("limit")
-    private Integer limit;
-
-    @DefaultValue("0")
-    @QueryParam("offset")
-    private Integer offset;
-
-    @DefaultValue("+name")
-    @QueryParam("sort")
-    private String sort;
 
     @QueryParam("filter")
     private String filter;
@@ -82,30 +69,6 @@ public class AreaSearchParams implements Serializable {
         this.west = west;
     }
 
-    public Integer getLimit() {
-        return limit;
-    }
-
-    public void setLimit(Integer limit) {
-        this.limit = limit;
-    }
-
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
-    public String getSort() {
-        return sort;
-    }
-
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
-
     public String getFilter() {
         return filter;
     }
@@ -117,14 +80,11 @@ public class AreaSearchParams implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "AreaSearchParams(north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, limit=<%d>, offset=<%d>, sort=<%s>, filter=<%s>)",
+            "AreaSearchParams(north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>, filter=<%s>)",
             north,
             south,
             east,
             west,
-            limit,
-            offset,
-            sort,
             filter
         );
     }
