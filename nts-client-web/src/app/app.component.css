@@ -5,6 +5,12 @@ agm-map {
 tr:hover td {
   background: lightblue;
 }
+tr.selected td {
+  background: darkcyan;
+}
+
+tr.not-selected td {
+}
 
 .container {
   width: 100%;

@@ -9,6 +9,7 @@
       [mapTypeId]="mapTypeId"
       [mapTypeControl]="mapTypeControl"
       [zoom]="zoom"
+      [usePanning]="true"
       (mapReady)="onMapReady($event)"
       (mapClick)="onMapClick($event.coords)"
       (boundsChange)="onBoundsChange($event)">
@@ -19,7 +20,12 @@
           [north]="ntsMap.north"
           [south]="ntsMap.south"
           [east]="ntsMap.east"
-          [west]="ntsMap.west">
+          [west]="ntsMap.west"
+          [fillOpacity]="0.0"
+          [strokeColor]="'bisque'"
+          [strokePosition]="0"
+          [strokeOpacity]="1.0"
+          [strokeWeight]="3">
         </agm-rectangle>
       </ng-container>
     </agm-map>
@@ -55,8 +61,8 @@
               [minLength]="1">
             </p-autoComplete>
           </label>
-          <button type="submit" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
-          <button type="reset" (click)="nameSearchParams.clear()">Clear</button>
+          <button type="button" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
+          <button type="button" (click)="nameSearchParams.clear()">Clear</button>
         </p-tabPanel>
         <p-tabPanel header="Search By Coordinate">
           <div>Enter the coordinate you want to search on:</div>
@@ -86,8 +92,8 @@
               [minLength]="1">
             </p-autoComplete>
           </label>
-          <button type="submit" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
-          <button type="reset" (click)="coordinateSearchParams.clear()">Clear</button>
+          <button type="button" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
+          <button type="button" (click)="coordinateSearchParams.clear()">Clear</button>
         </p-tabPanel>
         <p-tabPanel header="Search By Bounded Area">
           <div>Enter the bounds of the area you want to search on:</div>
@@ -143,8 +149,8 @@
               [minLength]="1">
             </p-autoComplete>
           </label>
-          <button type="submit" (click)="getByArea()" [disabled]="! enableSearchByArea()">Search</button>
-          <button type="reset" (click)="areaSearchParams.clear()">Clear</button>
+          <button type="button" (click)="getByArea()" [disabled]="! enableSearchByArea()">Search</button>
+          <button type="button" (click)="areaSearchParams.clear()">Clear</button>
         </p-tabPanel>
       </p-tabView>
     </div>
@@ -154,6 +160,8 @@
         [paginator]="true"
         [rows]="10"
         pageLinks="10"
+        [selectionMode]="'single'"
+        [(selection)]="selectedMap"
         [lazy]="true"
         [totalRecords]="totalRecords"
         [loading]="loading"
@@ -170,7 +178,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-ntsMap>
-          <tr (click)="mapSelected(ntsMap)">
+          <tr (click)="mapSelected(ntsMap)" [className]="getRowStyleClass(ntsMap)">
             <td>{{ntsMap.name}}</td>
             <td>{{ntsMap.snippet}}</td>
             <td>{{ntsMap.parent}}</td>

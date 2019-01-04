@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AgmMap, LatLngLiteral} from '@agm/core';
+import {AgmMap, LatLngBoundsLiteral, LatLngLiteral} from '@agm/core';
 import {NtsMapService} from './services/nts-map.service';
 import {NtsMap} from './models/nts-map';
 import {AreaSearchParams} from './models/area-search-params';
@@ -48,6 +48,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ntsMaps: NtsMap[] = [];
   searchResults: NtsMap[] = [];
+  selectedMap: NtsMap;
 
   pagingData = new PagingData();
   totalRecords = 0;
@@ -63,6 +64,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
+
   }
 
   ngOnDestroy() {
@@ -73,11 +75,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMapClick(coords: LatLngLiteral) {
-    // const coordParams = { lat: coords.lat, lng: coords.lng } as CoordinateSearchParams;
-    // this.ntsMapService.getByCoord(coordParams).subscribe( ntsMaps => {
-    //   this.ntsMaps = ntsMaps;
-    //   this.searchResults = ntsMaps;
-    // });
+    this.coordinateSearchParams.lat = coords.lat;
+    this.coordinateSearchParams.lng = coords.lng;
+    this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
+      this.totalRecords = maps.totalCount;
+      this.searchResults = maps.data;
+      this.loading = false;
+    });
   }
 
   onBoundsChange(event) {
@@ -145,6 +149,19 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   mapSelected(ntsMap: NtsMap) {
     this.lat = (ntsMap.north + ntsMap.south) / 2;
     this.lng = (ntsMap.east + ntsMap.west) / 2;
+    this.ntsMaps = [ ntsMap ];
+    switch (ntsMap.name.length) {
+      case 3:
+        this.zoom = 6;
+        break;
+
+      case 4:
+        this.zoom = ntsMap.east - ntsMap.west === 2 ? 8 : (ntsMap.east - ntsMap.west === 4 ? 7 : 6);
+        break;
+
+      case 6:
+        this.zoom = (ntsMap.east - ntsMap.west === 0.5 ? 10 : (ntsMap.north - ntsMap.south === 1 ? 9 : 8));
+    }
   }
 
   tabChanged(event: any) {
@@ -185,4 +202,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       });
     }
   }
+
+  getRowStyleClass(currentMap: NtsMap): string {
+    if (! this.selectedMap) {
+      return 'not-selected';
+    }
+    return (currentMap.name === this.selectedMap.name)
+      ? 'selected'
+      : 'not-selected';
+  }
+
 }
