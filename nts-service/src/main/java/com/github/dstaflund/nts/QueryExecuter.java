@@ -78,14 +78,17 @@ public final class QueryExecuter {
         return null;
     }
 
-    public static int getResultCount(Function<Session, Query> supplier){
+    public static long getResultCount(Function<Session, Query<Long>> supplier){
         try(Session session = SessionFactoryListener.getSessionFactory().getCurrentSession()) {
             Transaction tx = null;
 
             try {
                 tx = session.beginTransaction();
-                Query query = supplier.apply(session).setTimeout(sTimeoutInSeconds);
-                int count = ((Long) query.uniqueResult()).intValue();
+                long count = supplier.apply(session)
+                    .setTimeout(sTimeoutInSeconds)
+                    .setReadOnly(sReadOnlyInd)
+                    .setCacheable(sCacheable)
+                    .uniqueResult();
                 tx.commit();
                 return count;
             }

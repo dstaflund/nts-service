@@ -160,21 +160,16 @@
         [paginator]="true"
         [rows]="10"
         pageLinks="10"
-        [selectionMode]="'single'"
-        [(selection)]="selectedMap"
         [lazy]="true"
         [totalRecords]="totalRecords"
         [loading]="loading"
         (onLazyLoad)="lazyLoadMaps($event)">
         <ng-template pTemplate="header">
           <tr>
-            <th>Name</th>
-            <th>Title</th>
-            <th>Parent</th>
-            <th>North</th>
-            <th>South</th>
-            <th>East</th>
-            <th>West</th>
+            <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+              {{col.header}}
+              <p-sortIcon [field]="col.field" ariaLabel="Activate to sortField" ariaLabelDesc="Activate to sortField in descending order" ariaLabelAsc="Activate to sortField in ascending order"></p-sortIcon>
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-ntsMap>

@@ -6,7 +6,7 @@ public class PagedResponse<T> implements Serializable {
     private Integer limit;
     private Integer offset;
     private String sort;
-    private Integer totalCount;
+    private Long totalCount;
     private T data;
 
     public Integer getLimit() {
@@ -33,11 +33,11 @@ public class PagedResponse<T> implements Serializable {
         this.sort = sort;
     }
 
-    public Integer getTotalCount() {
+    public Long getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(Integer totalCount) {
+    public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;
     }
 
@@ -61,11 +61,11 @@ public class PagedResponse<T> implements Serializable {
         );
     }
 
-    public static <T> PagedResponse<T> newInstance(PagingParams paging, Integer count, T data){
+    public static <T> PagedResponse<T> newInstance(PagingParams paging, Long count, T data){
         PagedResponse<T> res = new PagedResponse<>();
         paging.setLimit(paging.getLimit());
         paging.setOffset(paging.getOffset());
-        paging.setSort(paging.getSort());
+        paging.setSortField(paging.getSortField());
         res.setTotalCount(count);
         res.setData(data);
         return res;

@@ -1,18 +1,20 @@
 package com.github.dstaflund.nts.search.name;
 
+import com.github.dstaflund.nts.CriteriaQueryHelper;
 import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.NtsMap_;
 import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.github.dstaflund.nts.NtsMap.NameQueryContract.COUNT_QUERY_NAME;
-import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_NAME;
-import static com.github.dstaflund.nts.NtsMap.NameQueryContract.PARAM_SNIPPET;
 
 final class NameSearchProvider {
     private static final Pattern sFullNamePattern = Pattern.compile("^\\s*([0-9]{1,3})?([A-P])?([01]?[0-9])?\\s*$");
@@ -24,24 +26,71 @@ final class NameSearchProvider {
         return PagedResponse.newInstance(paging, getCount(req), getData(paging, req));
     }
 
-    private static int getCount(NameSearchParams req){
+    @SuppressWarnings("Duplicates")
+    private static long getCount(NameSearchParams req){
         return QueryExecuter.getResultCount(
-            (Session session) ->
-                session
-                    .getNamedQuery(COUNT_QUERY_NAME)
-                    .setParameter(PARAM_NAME, scrubMapName(req.getName()))
-                    .setParameter(PARAM_SNIPPET, scrubSnippet(req.getSnippet()))
+            (Session session) -> {
+                CriteriaBuilder b = session.getSessionFactory().getCriteriaBuilder();
+
+                ParameterExpression<String> nameParam = b.parameter(String.class);
+                ParameterExpression<String> snippetParam = b.parameter(String.class);
+
+                CriteriaQuery<Long> criteria = b.createQuery(Long.class);
+                Root<NtsMap> root = criteria.from(NtsMap.class);
+                criteria
+                    .select(b.count(root))
+                    .where(
+                        b.and(
+                            b.or(
+                                b.isNull(nameParam),
+                                b.like(root.get(NtsMap_.searchName), nameParam)
+                            ),
+                            b.or(
+                                b.isNull(snippetParam),
+                                b.like(root.get(NtsMap_.snippet), snippetParam)
+                            )
+                        )
+                    );
+
+                return session.createQuery(criteria)
+                    .setParameter(nameParam, scrubMapName(req.getName()))
+                    .setParameter(snippetParam, scrubSnippet(req.getSnippet()));
+            }
         );
     }
 
+    @SuppressWarnings("Duplicates")
     private static List<NtsMap> getData(PagingParams paging, NameSearchParams req) {
         return QueryExecuter.executeQuery(
             paging,
-            (Session session) ->
-            session
-                .getNamedQuery(NtsMap.NameQueryContract.DATA_QUERY_NAME)
-                .setParameter(PARAM_NAME, scrubMapName(req.getName()))
-                .setParameter(PARAM_SNIPPET, scrubSnippet(req.getSnippet()))
+            (Session session) -> {
+                CriteriaBuilder b = session.getSessionFactory().getCriteriaBuilder();
+
+                ParameterExpression<String> nameParam = b.parameter(String.class);
+                ParameterExpression<String> snippetParam = b.parameter(String.class);
+
+                CriteriaQuery<NtsMap> criteria = b.createQuery(NtsMap.class);
+                Root<NtsMap> root = criteria.from(NtsMap.class);
+                criteria
+                    .select(root)
+                    .where(
+                        b.and(
+                            b.or(
+                                b.isNull(nameParam),
+                                b.like(root.get(NtsMap_.searchName), nameParam)
+                            ),
+                            b.or(
+                                b.isNull(snippetParam),
+                                b.like(root.get(NtsMap_.snippet), snippetParam)
+                            )
+                        )
+                    )
+                    .orderBy(CriteriaQueryHelper.getOrderDir(b, root, paging));
+
+                return session.createQuery(criteria)
+                    .setParameter(nameParam, scrubMapName(req.getName()))
+                    .setParameter(snippetParam, scrubSnippet(req.getSnippet()));
+            }
         );
     }
 

@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {AgmMap, LatLngBoundsLiteral, LatLngLiteral} from '@agm/core';
+import {AgmMap, LatLngBounds, LatLngLiteral} from '@agm/core';
 import {NtsMapService} from './services/nts-map.service';
 import {NtsMap} from './models/nts-map';
 import {AreaSearchParams} from './models/area-search-params';
@@ -54,6 +54,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   totalRecords = 0;
   loading: boolean;
 
+  cols: any[];
+
   private searchType = sNameSearch;
   private pageInitialized = false;
 
@@ -61,6 +63,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.cols = [
+      { field: 'name', header: 'Name' },
+      { field: 'snippet', header: 'Title' },
+      { field: 'parent', header: 'Parent' },
+      { field: 'north', header: 'North' },
+      { field: 'south', header: 'South' },
+      { field: 'east', header: 'East' },
+      { field: 'west', header: 'West' }
+    ];
   }
 
   ngAfterViewInit() {
@@ -84,7 +95,17 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  onBoundsChange(event) {
+  onBoundsChange(bounds:  LatLngBounds) {
+    if (this.zoom  === 0 || ! this.selectedMap) {
+      return;
+    }
+
+    if (bounds.getNorthEast().lat() < this.selectedMap.north
+     || bounds.getSouthWest().lat() > this.selectedMap.south
+     || bounds.getNorthEast().lng() < this.selectedMap.east
+     || bounds.getSouthWest().lng() > this.selectedMap.west) {
+      this.zoom -= 1;
+    }
   }
 
   getMatchingNames(event) {
@@ -147,6 +168,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   mapSelected(ntsMap: NtsMap) {
+    this.selectedMap = ntsMap;
     this.lat = (ntsMap.north + ntsMap.south) / 2;
     this.lng = (ntsMap.east + ntsMap.west) / 2;
     this.ntsMaps = [ ntsMap ];
@@ -172,14 +194,19 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   lazyLoadMaps(event: LazyLoadEvent) {
+    console.log(event);
     if (! this.pageInitialized) {
       this.pageInitialized = true;
       return;
     }
     if (! event) {
       this.pagingData.offset = 0;
+      this.pagingData.sortField = 'name';
+      this.pagingData.sortOrder = 1;
     } else {
       this.pagingData.offset = event.first;
+      this.pagingData.sortField = event.sortField;
+      this.pagingData.sortOrder = event.sortOrder;
     }
     this.loading = true;
     if (this.searchType === sAreaSearch) {

@@ -79,11 +79,10 @@ export class NtsMapService {
   }
 
   setPagingData(params: HttpParams, pagingData: PagingData) {
-    params = params.set('limit', String(pagingData.limit));
-    params = params.set('offset', String(pagingData.offset));
-    if (pagingData.sort && pagingData.sort.trim().length > 0) {
-      params = params.set('sort', pagingData.sort);
-    }
-    return params;
+    return params
+      .set('limit', String(pagingData.limit))
+      .set('offset', String(pagingData.offset))
+      .set('sortField', pagingData.sortField)
+      .set('sortOrder', String(pagingData.sortOrder));
   }
 }

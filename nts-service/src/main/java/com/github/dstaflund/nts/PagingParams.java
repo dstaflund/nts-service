@@ -3,6 +3,7 @@ package com.github.dstaflund.nts;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 import java.io.Serializable;
@@ -22,9 +23,19 @@ public class PagingParams implements Serializable {
     @QueryParam("offset")
     private Integer offset;
 
-    @DefaultValue("+name")
-    @QueryParam("sort")
-    private String sort;
+    @DefaultValue("name")
+    @Pattern(
+        regexp = "^(name|snippet|parent|north|south|east|west)$",
+        message = "SortField must be 'name', 'snippet', 'parent', 'north', 'south', 'east', or 'west'"
+    )
+    @QueryParam("sortField")
+    private String sortField;
+
+    @DefaultValue("1")
+    @QueryParam("sortOrder")
+    @Min(value = -1, message = "SortOrder must be -1 (desc) or 1 (asc)")
+    @Max(value = 1, message = "SortOrder must be -1 (desc) or 1 (asc)")
+    private Integer sortOrder;
 
     public Integer getLimit() {
         return limit;
@@ -42,21 +53,30 @@ public class PagingParams implements Serializable {
         this.offset = offset;
     }
 
-    public String getSort() {
-        return sort;
+    public String getSortField() {
+        return sortField;
     }
 
-    public void setSort(String sort) {
-        this.sort = sort;
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
+
+    public Integer getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "PagingParams(limit=<%d>, offset=<%d>, sort=<%s>, data=<%s>)",
+            "PagingParams(limit=<%d>, offset=<%d>, sortField=<%s>, sortOrder=<%d>)",
             limit,
             offset,
-            sort
+            sortField,
+            sortOrder
         );
     }
 }

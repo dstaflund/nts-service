@@ -11,85 +11,22 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Objects;
 
-import static java.lang.String.format;
-
 @Entity
 @Table(name="nts_maps", schema="public")
 @NamedQueries({
     @NamedQuery(
-        name = "NtsMap.ByArea",
-        query = "  FROM NtsMap m"
-            + " WHERE 1 = 1"
-            + "   AND :north IS NOT NULL"
-            + "   AND :south IS NOT NULL"
-            + "   AND :east IS NOT NULL"
-            + "   AND :west IS NOT NULL"
-            + "   AND m.south BETWEEN :south AND :north"
-            + "   AND m.north BETWEEN :south AND :north"
-            + "   AND m.west BETWEEN :west AND :east"
-            + "   AND m.east BETWEEN :west AND :east"
-    ),
-    @NamedQuery(
-        name = "NtsMap.ByArea.Count",
-        query = "SELECT COUNT(m)"
-            + "    FROM NtsMap m"
-            + "   WHERE 1 = 1"
-            + "     AND :north IS NOT NULL"
-            + "     AND :south IS NOT NULL"
-            + "     AND :east IS NOT NULL"
-            + "     AND :west IS NOT NULL"
-            + "     AND m.south BETWEEN :south AND :north"
-            + "     AND m.north BETWEEN :south AND :north"
-            + "     AND m.west BETWEEN :west AND :east"
-            + "     AND m.east BETWEEN :west AND :east"
-    ),
-    @NamedQuery(
-        name = "NtsMap.ByCoordinate",
-        query = "  FROM NtsMap m"
-            + " WHERE 1 = 1"
-            + "   AND :latitude IS NOT NULL"
-            + "   AND :longitude IS NOT NULL"
-            + "   AND :latitude BETWEEN m.south AND m.north"
-            + "   AND :longitude BETWEEN m.west AND m.east"
-    ),
-    @NamedQuery(
-        name = "NtsMap.ByCoordinate.Count",
-        query = "SELECT COUNT(m)"
-            + "    FROM NtsMap m"
-            + "   WHERE 1 = 1"
-            + "     AND :latitude IS NOT NULL"
-            + "     AND :longitude IS NOT NULL"
-            + "     AND :latitude BETWEEN m.south AND m.north"
-            + "     AND :longitude BETWEEN m.west AND m.east"
-    ),
-    @NamedQuery(
-        name = "NtsMap.ByName",
-        query = "  FROM NtsMap m"
-            + " WHERE 1 = 1"
-            + "   AND (:name IS NULL OR m.searchName LIKE :name)"
-            + "   AND (:snippet IS NULL OR m.snippet LIKE :snippet)"
-    ),
-    @NamedQuery(
-        name = "NtsMap.ByName.Count",
-        query = "SELECT COUNT(m)"
-            + "    FROM NtsMap m"
-            + "   WHERE 1 = 1"
-            + "     AND (:name IS NULL OR m.searchName LIKE :name)"
-            + "     AND (:snippet IS NULL OR m.snippet LIKE :snippet)"
-    ),
-    @NamedQuery(
         name = "NtsMap.MatchingNames",
         query = "   SELECT DISTINCT m.name"
-              + "     FROM NtsMap m"
-              + "    WHERE m.searchName LIKE :query"
-              + " ORDER BY m.name ASC"
+            + "     FROM NtsMap m"
+            + "    WHERE m.searchName LIKE :query"
+            + " ORDER BY m.name ASC"
     ),
     @NamedQuery(
         name = "NtsMap.MatchingSnippets",
         query = "   SELECT DISTINCT m.snippet"
-              + "     FROM NtsMap m"
-              + "    WHERE m.snippet LIKE :query"
-              + " ORDER BY m.snippet ASC"
+            + "     FROM NtsMap m"
+            + "    WHERE m.snippet LIKE :query"
+            + " ORDER BY m.snippet ASC"
     )
 })
 
@@ -125,29 +62,6 @@ import static java.lang.String.format;
     )
 })
 public class NtsMap implements Serializable {
-
-    public static class AreaQueryContract {
-        public static final String DATA_QUERY_NAME = "NtsMap.ByArea";
-        public static final String COUNT_QUERY_NAME = "NtsMap.ByArea.Count";
-        public static final String PARAM_NORTH = "north";
-        public static final String PARAM_SOUTH = "south";
-        public static final String PARAM_EAST = "east";
-        public static final String PARAM_WEST = "west";
-    }
-
-    public static class CoordinateQueryContract {
-        public static final String DATA_QUERY_NAME = "NtsMap.ByCoordinate";
-        public static final String COUNT_QUERY_NAME = "NtsMap.ByCoordinate.Count";
-        public static final String PARAM_LATITUDE = "latitude";
-        public static final String PARAM_LONGITUDE = "longitude";
-    }
-
-    public static class NameQueryContract {
-        public static final String DATA_QUERY_NAME = "NtsMap.ByName";
-        public static final String COUNT_QUERY_NAME = "NtsMap.ByName.Count";
-        public static final String PARAM_NAME = "name";
-        public static final String PARAM_SNIPPET = "snippet";
-    }
 
     public static class MatchingNamesContract {
         public static final String QUERY_NAME = "NtsMap.MatchingNames";
@@ -327,7 +241,7 @@ public class NtsMap implements Serializable {
 
     @Override
     public String toString() {
-        return format(
+        return String.format(
             "NtsMap(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
             name,
             snippet,

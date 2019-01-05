@@ -1,19 +1,18 @@
 package com.github.dstaflund.nts.search.area;
 
+import com.github.dstaflund.nts.CriteriaQueryHelper;
 import com.github.dstaflund.nts.NtsMap;
+import com.github.dstaflund.nts.NtsMap_;
 import com.github.dstaflund.nts.PagingParams;
 import com.github.dstaflund.nts.PagedResponse;
 import com.github.dstaflund.nts.QueryExecuter;
 import org.hibernate.Session;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
 import java.util.List;
-
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.COUNT_QUERY_NAME;
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.DATA_QUERY_NAME;
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_EAST;
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_NORTH;
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_SOUTH;
-import static com.github.dstaflund.nts.NtsMap.AreaQueryContract.PARAM_WEST;
 
 final class AreaSearchProvider {
 
@@ -24,28 +23,79 @@ final class AreaSearchProvider {
         return PagedResponse.newInstance(paging, getCount(req), getData(paging, req));
     }
 
-    private static int getCount(AreaSearchParams req) {
+    @SuppressWarnings("Duplicates")
+    private static long getCount(AreaSearchParams req) {
         return QueryExecuter.getResultCount(
-            (Session session) ->
-                session
-                    .getNamedQuery(COUNT_QUERY_NAME)
-                    .setParameter(PARAM_NORTH, req.getNorth())
-                    .setParameter(PARAM_SOUTH, req.getSouth())
-                    .setParameter(PARAM_EAST, req.getEast())
-                    .setParameter(PARAM_WEST, req.getWest())
+            (Session session) -> {
+                CriteriaBuilder b = session.getSessionFactory().getCriteriaBuilder();
+
+                ParameterExpression<Float> northParam = b.parameter(Float.class);
+                ParameterExpression<Float> southParam = b.parameter(Float.class);
+                ParameterExpression<Float> eastParam = b.parameter(Float.class);
+                ParameterExpression<Float> westParam = b.parameter(Float.class);
+
+                CriteriaQuery<Long> criteria = b.createQuery(Long.class);
+                Root<NtsMap> root = criteria.from(NtsMap.class);
+                criteria
+                    .select(b.count(root))
+                    .where(
+                        b.and(
+                            b.isNotNull(northParam),
+                            b.isNotNull(southParam),
+                            b.isNotNull(eastParam),
+                            b.isNotNull(westParam),
+                            b.between(root.get(NtsMap_.north), southParam, northParam),
+                            b.between(root.get(NtsMap_.south), southParam, northParam),
+                            b.between(root.get(NtsMap_.east), westParam, eastParam),
+                            b.between(root.get(NtsMap_.west), westParam, eastParam)
+                        )
+                    );
+                return session.createQuery(criteria)
+                    .setParameter(northParam, req.getNorth())
+                    .setParameter(southParam, req.getSouth())
+                    .setParameter(eastParam, req.getEast())
+                    .setParameter(westParam, req.getWest());
+            }
         );
     }
 
+    @SuppressWarnings("Duplicates")
     private static List<NtsMap> getData(PagingParams paging, AreaSearchParams req) {
         return QueryExecuter.executeQuery(
             paging,
             (Session session) ->
-                session
-                    .getNamedQuery(DATA_QUERY_NAME)
-                    .setParameter(PARAM_NORTH, req.getNorth())
-                    .setParameter(PARAM_SOUTH, req.getSouth())
-                    .setParameter(PARAM_EAST, req.getEast())
-                    .setParameter(PARAM_WEST, req.getWest())
+            {
+                CriteriaBuilder b = session.getSessionFactory().getCriteriaBuilder();
+
+                ParameterExpression<Float> northParam = b.parameter(Float.class);
+                ParameterExpression<Float> southParam = b.parameter(Float.class);
+                ParameterExpression<Float> eastParam = b.parameter(Float.class);
+                ParameterExpression<Float> westParam = b.parameter(Float.class);
+
+                CriteriaQuery<NtsMap> criteria = b.createQuery(NtsMap.class);
+                Root<NtsMap> root = criteria.from(NtsMap.class);
+                criteria
+                    .select(root)
+                    .where(
+                        b.and(
+                            b.isNotNull(northParam),
+                            b.isNotNull(southParam),
+                            b.isNotNull(eastParam),
+                            b.isNotNull(westParam),
+                            b.between(root.get(NtsMap_.north), southParam, northParam),
+                            b.between(root.get(NtsMap_.south), southParam, northParam),
+                            b.between(root.get(NtsMap_.east), westParam, eastParam),
+                            b.between(root.get(NtsMap_.west), westParam, eastParam)
+                        )
+                    )
+                    .orderBy(CriteriaQueryHelper.getOrderDir(b, root, paging));
+
+                return session.createQuery(criteria)
+                    .setParameter(northParam, req.getNorth())
+                    .setParameter(southParam, req.getSouth())
+                    .setParameter(eastParam, req.getEast())
+                    .setParameter(westParam, req.getWest());
+            }
         );
     }
 }
