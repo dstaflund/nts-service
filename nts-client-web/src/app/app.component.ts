@@ -6,7 +6,7 @@ import {AreaSearchParams} from './models/area-search-params';
 import {CoordinateSearchParams} from './models/coordinate-search-params';
 import {NameSearchParams} from './models/name-search-params';
 import {PagingData} from './models/paging-data';
-import {LazyLoadEvent} from 'primeng/api';
+import {LazyLoadEvent, MenuItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
 import {ControlPosition, MapTypeControlOptions, ZoomControlOptions} from '@agm/core/services/google-maps-types';
 import {environment} from '../environments/environment';
@@ -68,6 +68,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   displayInfo = true;
 
+  menuItems: MenuItem[];
+  selectedMenuItemName = 'Intro';
+
   private searchType = sNameSearch;
   private pageInitialized = false;
 
@@ -90,6 +93,14 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       { field: 'south', header: 'South' },
       { field: 'east', header: 'East' },
       { field: 'west', header: 'West' }
+    ];
+
+    this.menuItems = [
+      {label: 'Intro', command: () => this.selectedMenuItemName = 'Intro' },
+      {label: 'API', command: () => this.selectedMenuItemName = 'API' },
+      {label: 'Dependencies', command: () => this.selectedMenuItemName = 'Dependencies' },
+      {label: 'Release History', command: () => this.selectedMenuItemName = 'Releases' },
+      {label: 'Contact', command: () => this.selectedMenuItemName = 'Contact' },
     ];
   }
 

@@ -126,9 +126,34 @@ body {
 }
 
 p-dialog div {
-  margin-bottom: 8px;
+  margin-top: 8px;
 }
 
 p-dialog span {
   font-weight: bold;
+}
+
+.query-param div {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.method-param div {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.dependency-param div {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.release-param div {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.contact-param div {
+  margin: 0px !important;
+  padding: 0px !important;
 }

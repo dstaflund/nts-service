@@ -185,44 +185,212 @@
   <p-header>
     NTS Lookup ({{ version }})
   </p-header>
-  <div>
-    This application lets you search and view the boundaries of National Topographic System (NTS) maps, a
-    system used by Natural Resources Canada for providing general topographic maps of the country.
+  <p-tabMenu [model]="menuItems" [activeItem]="menuItems[0]">></p-tabMenu>
+  <div id="info-tab" *ngIf="selectedMenuItemName === 'Intro'">
+    <div>
+      This application lets you search and view the boundaries of National Topographic System (NTS) maps, a
+      system used by Natural Resources Canada for providing general topographic maps of the country.
+    </div>
+    <div>
+      A map sheet is classified by a string containing a number identifying the 1:1,000,000 scale <span>map series</span>
+      that contains the sheet (e.g., 30), a letter identifying a 1:250,000 scale <span>map area</span> (e.g., M), and
+      finally a number identifying the 1:50,000 scale <span>map sheet</span> itself.  The town of Lanigan, Saskatchewan,
+      for example, is found on the map 72P14.
+    </div>
+    <div>
+      In addition to its name, an NTS map has north, south, east, and west coordinates (expressed in terms of
+      latitude and longitude), as well as a title.  The coordinates that bound 72P14 are:
+      <ul>
+        <li>n = 52 lat</li>
+        <li>s = 51.75 lat</li>
+        <li>e = -105 lng</li>
+        <li>w = -105.5 lng</li>
+      </ul>
+      and the title is <span>LANIGAN</span>.
+    </div>
+    <div>
+      To use this application, press the search icon, enter a combination of the name, title, and coordinates
+      of the maps you want to locate, and press return.  You can sort and page through the results and can click
+      on individual maps to see their boundaries.
+      <ul>
+        <li>If the search results get in the way of the map, just close the control and press the search icon later when
+          you want to resume working with it.</li>
+        <li>When searching on a name or title, a left-most substring search is performed.  Searching on a title
+          value of <span>LANG</span> would result in <span>LANG RIVER</span>, <span>LANGRUTH</span>, <span>LANGENBURG</span>,
+          etc.</li>
+        <li>When searching on a coordinate, a left-most matching-digit search is performed.  Search on an coordinate
+          of <span>52.2</span> would result in <span>52.20</span>, <span>52.25</span>, <span>52.26</span>, etc.</li>
+        <li>When searching on more than one field, only records that match all supplied will be returned.</li>
+      </ul>
+    </div>
   </div>
-  <div>
-    A map sheet is classified by a string containing a number identifying the 1:1,000,000 scale <span>map series</span>
-    that contains the sheet (e.g., 30), a letter identifying a 1:250,000 scale <span>map area</span> (e.g., M), and
-    finally a number identifying the 1:50,000 scale <span>map sheet</span> itself.  The town of Lanigan, Saskatchewan,
-    for example, is found on the map 72P14.
+  <div id="api-tab" *ngIf="selectedMenuItemName === 'API'">
+    <div>
+      A JSON API can be used to search for NTS maps programmatically.
+    </div>
+    <div>
+      <div>
+        <div class="method-param">
+          <div class="ui-g-2">HTTP Method</div>
+          <div class="ui-g-10">GET</div>
+        </div>
+        <div class="method-param">
+          <div class="ui-g-2 bottom">Base Url</div>
+          <div class="ui-g-10 bottom">
+            <a href="https://www.ntslookup.ca/json/nts">https://www.ntslookup.ca/json/nts</a>
+          </div>
+        </div>
+      </div>
+      <div>Query Parameters</div>
+      <div class="query-param">
+        <div class="ui-g-2">name</div>
+        <div class="ui-g-10">NTS Map Name (ex: 72P14)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">title</div>
+        <div class="ui-g-10">NTS Map Title (ex: LANIGAN)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">north</div>
+        <div class="ui-g-10">North Coordinate (ex: 51)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">south</div>
+        <div class="ui-g-10">South Coordinate (ex: 51.75)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">east</div>
+        <div class="ui-g-10">East Coordinate (ex: -105)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">west</div>
+        <div class="ui-g-10">West Coordinate (ex: -105.5)</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">limit</div>
+        <div class="ui-g-6">Maximum size of result set (ex:  limit=25)</div>
+        <div class="ui-g-4">Used for server-side paging.</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">offset</div>
+        <div class="ui-g-6">First record of result set (ex:  offset=25)</div>
+        <div class="ui-g-4">Used for server-side paging.</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">sortField</div>
+        <div class="ui-g-6">Field to sort result set on (ex:  sortField=name)</div>
+        <div class="ui-g-4">&nbsp;</div>
+      </div>
+      <div class="query-param">
+        <div class="ui-g-2">sortOrder</div>
+        <div class="ui-g-6">Order to sort result set by (ex:  sortOrder=1)</div>
+        <div class="ui-g-4">1 = ascending.  -1 = descending.</div>
+      </div>
+    </div>
   </div>
-  <div>
-    In addition to its name, an NTS map has north, south, east, and west coordinates (expressed in terms of
-    latitude and longitude), as well as a title.  The coordinates that bound 72P14 are:
-    <ul>
-      <li>n = 52 lat</li>
-      <li>s = 51.75 lat</li>
-      <li>e = -105 lng</li>
-      <li>w = -105.5 lng</li>
-    </ul>
-    and the title is <span>LANIGAN</span>.
+  <div id="dependencies-tab" *ngIf="selectedMenuItemName === 'Dependencies'">
+    <div>Frontend application uses the following technologies:</div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Angular</div>
+      <div class="ui-g-2">7.1.0</div>
+      <div class="ui-g-6">
+        <a href="https://angular.io/">https://angular.io/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Angular Google Maps (AGM)</div>
+      <div class="ui-g-2">1.0.0 beta 5</div>
+      <div class="ui-g-6">
+        <a href="https://angular-maps.com/">https://angular-maps.com/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">PrimeNG</div>
+      <div class="ui-g-2">7.0.3</div>
+      <div class="ui-g-6">
+        <a href="https://primefaces.org/primeng/#/">https://primefaces.org/primeng/#/</a>
+      </div>
+    </div>
+    <div>Backend application uses the following technologies:</div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Apache Log4J</div>
+      <div class="ui-g-2">2.11.1</div>
+      <div class="ui-g-6">
+        <a href="https://logging.apache.org/log4j/2.x/">https://logging.apache.org/log4j/2.x/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Apache Tomcat</div>
+      <div class="ui-g-2">9.0.14</div>
+      <div class="ui-g-6">
+        <a href="http://tomcat.apache.org/">http://tomcat.apache.org/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Hibernate</div>
+      <div class="ui-g-2">5.4.0</div>
+      <div class="ui-g-6">
+        <a href="http://hibernate.org/">http://hibernate.org/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Java</div>
+      <div class="ui-g-2">8</div>
+      <div class="ui-g-6">
+        <a href="https://jdk.java.net/">https://jdk.java.net/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Jersey</div>
+      <div class="ui-g-2">2.5.21</div>
+      <div class="ui-g-6">
+        <a href="https://jersey.github.io/">https://jersey.github.io/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">Jersey Bean Validation</div>
+      <div class="ui-g-2">2.5.21</div>
+      <div class="ui-g-6">
+        <a href="https://jersey.github.io/">https://jersey.github.io/</a>
+      </div>
+    </div>
+    <div class="dependency-param">
+      <div class="ui-g-4">PostgreSQL</div>
+      <div class="ui-g-2">42.2.5</div>
+      <div class="ui-g-6">
+        <a href="https://www.postgresql.org/">https://www.postgresql.org/</a>
+      </div>
+    </div>
   </div>
-  <div>
-    To use this application, press the search icon, enter a combination of the name, title, and coordinates
-    of the maps you want to locate, and press return.  You can sort and page through the results and can click
-    on individual maps to see their boundaries.
+  <div id="releases-tab" *ngIf="selectedMenuItemName === 'Releases'">
+    <div class="elease-param">
+      <div class="ui-g-2">v1.0.0</div>
+      <div class="ui-g-10">Initial release</div>
+    </div>
   </div>
-  <div>
-    Some other comments:
-    <ul>
-      <li>If the search results get in the way of the map, just close the control and press the search icon later when
-        you want to resume working with it.</li>
-      <li>When searching on a name or title, a left-most substring search is performed.  Searching on a title
-      value of <span>LANG</span> would result in <span>LANG RIVER</span>, <span>LANGRUTH</span>, <span>LANGENBURG</span>,
-      etc.</li>
-      <li>When searching on a coordinate, a left-most matching-digit search is performed.  Search on an coordinate
-      of <span>52.2</span> would result in <span>52.20</span>, <span>52.25</span>, <span>52.26</span>, etc.</li>
-      <li>When searching on more than one field, only records that match all supplied will be returned.</li>
-    </ul>
+  <div id="contact-tab" *ngIf="selectedMenuItemName === 'Contact'">
+    <div class="contact-param">
+      <div class="ui-g-2">Developer</div>
+      <div class="ui-g-10">Darryl Staflund</div>
+    </div>
+    <div class="contact-param">
+      <div class="ui-g-2">Email Address</div>
+      <div class="ui-g-10">
+        <a href="email:d.staflund@gmail.com">d.staflund@gmail.com</a>
+      </div>
+    </div>
+    <div class="contact-param">
+      <div class="ui-g-2">Source Code</div>
+      <div class="ui-g-10">
+        <a href="https://github.com/dstaflund/nts-service">https://github.com/dstaflund/nts-service</a>
+      </div>
+    </div>
+    <div class="contact-param">
+      <div class="ui-g-2">Issues</div>
+      <div class="ui-g-10">
+        <a href="https://github.com/dstaflund/nts-service/issues">https://github.com/dstaflund/nts-service/issues</a>
+      </div>
+    </div>
   </div>
   <p-footer>
     <button type="button" pButton icon="pi pi-check" (click)="hideInfoDialog()" label="Close"></button>
