@@ -1,5 +1,5 @@
 export class PagingData {
-  limit = 10;
+  limit = 5;
   offset = 0;
   sortField: string;
   sortOrder: number;

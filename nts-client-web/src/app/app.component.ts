@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {AgmMap, LatLngBounds, LatLngLiteral} from '@agm/core';
 import {NtsMapService} from './services/nts-map.service';
 import {NtsMap} from './models/nts-map';
@@ -7,6 +7,9 @@ import {CoordinateSearchParams} from './models/coordinate-search-params';
 import {NameSearchParams} from './models/name-search-params';
 import {PagingData} from './models/paging-data';
 import {LazyLoadEvent} from 'primeng/api';
+import {OverlayPanel} from 'primeng/primeng';
+import {ControlPosition, MapTypeControlOptions, ZoomControlOptions} from '@agm/core/services/google-maps-types';
+import {environment} from '../environments/environment';
 
 const sAreaSearch = 2;
 const sCoordSearch = 1;
@@ -19,8 +22,10 @@ const sNameSearch = 0;
 })
 export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('agmMap') agmMap: AgmMap;
+  @ViewChild('op2') op2: OverlayPanel;
 
-  title = 'National Topographic Service (NTS) Map Search';
+  version = environment.version;
+
   north = 83.49900396917062 - 10;
   south = 40.571925758975915;
   east = -50.84630119999099;
@@ -28,10 +33,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   lat = (this.north + this.south) / 2;
   lng = (this.east + this.west) / 2;
 
-  fullScreenControl = true;
   zoom = 4;
   mapTypeId = 'hybrid';
   mapTypeControl = true;
+  mapTypeControlOptions = { position: ControlPosition.TOP_LEFT } as MapTypeControlOptions;
+  zoomControlOptions = { position: ControlPosition.RIGHT_CENTER } as ZoomControlOptions;
 
   nameSearchParams = new NameSearchParams();
   coordinateSearchParams = new CoordinateSearchParams();
@@ -56,17 +62,30 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   cols: any[];
 
+  screenHeight: number;
+  screenWidth: number;
+  mapHeight = '600px';
+
+  displayInfo = true;
+
   private searchType = sNameSearch;
   private pageInitialized = false;
 
   constructor(private ntsMapService: NtsMapService) {
+    this.onResize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.screenHeight = window.innerHeight;
+    this.screenWidth = window.innerWidth;
+    this.mapHeight = this.screenHeight - 16 + 'px';
   }
 
   ngOnInit() {
     this.cols = [
       { field: 'name', header: 'Name' },
       { field: 'snippet', header: 'Title' },
-      { field: 'parent', header: 'Parent' },
       { field: 'north', header: 'North' },
       { field: 'south', header: 'South' },
       { field: 'east', header: 'East' },
@@ -81,8 +100,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
   }
 
+
   onMapReady(event) {
-    console.log(event);
+//    this.op2.show(event);
   }
 
   onMapClick(coords: LatLngLiteral) {
@@ -204,28 +224,43 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.pagingData.sortField = 'name';
       this.pagingData.sortOrder = 1;
     } else {
-      this.pagingData.offset = event.first;
-      this.pagingData.sortField = event.sortField;
-      this.pagingData.sortOrder = event.sortOrder;
+      this.pagingData.offset = event.first ? event.first : 0;
+      this.pagingData.sortField = event.sortField ? event.sortField : 'name';
+      this.pagingData.sortOrder = event.sortOrder ? event.sortOrder : 1;
     }
     this.loading = true;
+    if (! this.searchResults || this.searchResults.length < 5) {
+      this.op2.visible = false;
+    }
     if (this.searchType === sAreaSearch) {
       this.ntsMapService.getByArea(this.pagingData, this.areaSearchParams).subscribe(maps => {
         this.totalRecords = maps.totalCount;
         this.searchResults = maps.data;
         this.loading = false;
+        if (! this.searchResults || this.searchResults.length < 5) {
+          this.op2.visible = false;
+        }
+        this.op2.visible = true;
       });
     } else if (this.searchType === sCoordSearch) {
       this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
         this.totalRecords = maps.totalCount;
         this.searchResults = maps.data;
         this.loading = false;
+        if (! this.searchResults || this.searchResults.length < 5) {
+          this.op2.visible = false;
+        }
+        this.op2.visible = true;
       });
     } else if (this.searchType === sNameSearch) {
       this.ntsMapService.getByName(this.pagingData, this.nameSearchParams).subscribe(maps => {
         this.totalRecords = maps.totalCount;
         this.searchResults = maps.data;
         this.loading = false;
+        if (! this.searchResults || this.searchResults.length < 5) {
+          this.op2.visible = false;
+        }
+        this.op2.visible = true;
       });
     }
   }
@@ -239,4 +274,34 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       : 'not-selected';
   }
 
+  keyPressed($event: KeyboardEvent) {
+    if ($event.key === 'Enter' && $event.code === 'Enter') {
+      this.lazyLoadMaps(null);
+    }
+  }
+
+  getDisplayName(snippet: string) {
+    return (! snippet || snippet.length < 16)
+      ? snippet
+      : snippet.substr(0, 12) + '...';
+  }
+
+  getSnippetTitle(ntsMap: NtsMap) {
+    if (! ntsMap) {
+      return;
+    }
+    let title = ntsMap.name;
+    if (ntsMap.snippet && ntsMap.snippet !== ntsMap.name) {
+      title += ' (' + ntsMap.snippet + ')';
+    }
+    return title;
+  }
+
+  showInfoDialog() {
+    this.displayInfo = true;
+  }
+
+  hideInfoDialog() {
+    this.displayInfo = false;
+  }
 }

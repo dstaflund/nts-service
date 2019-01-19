@@ -1,15 +1,17 @@
-<h1>{{ title }}</h1>
-<div>
-  <div class="ui-g-4">
+<div class="parent-div">
+  <div class="map-div">
     <agm-map
       #agmMap
-      [fullscreenControl]="fullScreenControl"
+      [ngStyle]="{ 'height': mapHeight }"
       [latitude]="lat"
       [longitude]="lng"
       [mapTypeId]="mapTypeId"
       [mapTypeControl]="mapTypeControl"
+      [mapTypeControlOptions] = "mapTypeControlOptions"
       [zoom]="zoom"
+      [zoomControlOptions]="zoomControlOptions"
       [usePanning]="true"
+      [streetViewControl]="false"
       (mapReady)="onMapReady($event)"
       (mapClick)="onMapClick($event.coords)"
       (boundsChange)="onBoundsChange($event)">
@@ -22,171 +24,207 @@
           [east]="ntsMap.east"
           [west]="ntsMap.west"
           [fillOpacity]="0.0"
-          [strokeColor]="'bisque'"
+          [strokeColor]="'red'"
           [strokePosition]="0"
           [strokeOpacity]="1.0"
-          [strokeWeight]="3">
+          [strokeWeight]="3"
+          pTooltip="{{ ntsMap.snippet }}" tooltipPosition="top" showDelay="250">
+          <!--
+          <agm-snazzy-info-window
+            [isOpen]="true"
+            [backgroundColor]="'bisque'"
+            [latitude]="(ntsMap.north + ntsMap.south) / 2"
+            [longitude]="(ntsMap.east + ntsMap.west) / 2"
+            [maxWidth]="300"
+            [closeWhenOthersOpen]="true">
+            <ng-template>
+              {{ getSnippetTitle(ntsMap) }}
+            </ng-template>
+          </agm-snazzy-info-window>
+          -->
         </agm-rectangle>
       </ng-container>
     </agm-map>
   </div>
-  <div class="ui-g-8">
-    <div>
-      <p-tabView (onChange)="tabChanged($event)">
-        <p-tabPanel header="Search By Name">
-          <div>Enter the name or title you want to search on:</div>
-          <label for="nameInput">
-            Name
-            <p-autoComplete
-              id="nameInput"
-              [(ngModel)]="nameSearchParams.name"
-              [suggestions]="matchingNames"
-              (completeMethod)="getMatchingNames($event)"
-              [size]="10"
-              placeholder="ex:  72P14"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <label for="snippetInput">
-            Title
-            <p-autoComplete
-              id="snippetInput"
-              [(ngModel)]="nameSearchParams.snippet"
-              [suggestions]="matchingSnippets"
-              (completeMethod)="getMatchingSnippets($event)"
-              [size]="20"
-              placeholder="ex:  LANIGAN"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <button type="button" (click)="getByName()" [disabled]="! enableSearchByName()">Search</button>
-          <button type="button" (click)="nameSearchParams.clear()">Clear</button>
-        </p-tabPanel>
-        <p-tabPanel header="Search By Coordinate">
-          <div>Enter the coordinate you want to search on:</div>
-          <label for="latitudeInput">
-            Latitude
-            <p-autoComplete
-              id="latitudeInput"
-              [(ngModel)]="coordinateSearchParams.lat"
-              [suggestions]="matchingLatitudes"
-              (completeMethod)="getMatchingLatitudes($event)"
-              [size]="10"
-              placeholder="ex:  51.75"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <label for="longitudeInput">
-            Longitude
-            <p-autoComplete
-              id="longitudeInput"
-              [(ngModel)]="coordinateSearchParams.lng"
-              [suggestions]="matchingLongitudes"
-              (completeMethod)="getMatchingLongitudes($event)"
-              [size]="10"
-              placeholder="ex:  -105.25"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <button type="button" (click)="getByCoordinate()" [disabled]="! enableSearchByCoordinate()">Search</button>
-          <button type="button" (click)="coordinateSearchParams.clear()">Clear</button>
-        </p-tabPanel>
-        <p-tabPanel header="Search By Bounded Area">
-          <div>Enter the bounds of the area you want to search on:</div>
-          <label for="northInput">
-            North
-            <p-autoComplete
-              id="northInput"
-              [(ngModel)]="areaSearchParams.north"
-              [suggestions]="matchingNorthLatitudes"
-              (completeMethod)="getMatchingNorthLatitudes($event)"
-              [size]="10"
-              placeholder="ex:  52"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <label for="southInput">
-            South
-            <p-autoComplete
-              id="southInput"
-              [(ngModel)]="areaSearchParams.south"
-              [suggestions]="matchingSouthLatitudes"
-              (completeMethod)="getMatchingSouthLatitudes($event)"
-              [size]="10"
-              placeholder="ex:  51.75"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <label for="eastInput">
-            East
-            <p-autoComplete
-              id="eastInput"
-              [(ngModel)]="areaSearchParams.east"
-              [suggestions]="matchingEastLongitudes"
-              (completeMethod)="getMatchingEastLongitudes($event)"
-              [size]="10"
-              placeholder="ex:  -105"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <label for="westInput">
-            West
-            <p-autoComplete
-              id="westInput"
-              [(ngModel)]="areaSearchParams.west"
-              [suggestions]="matchingWestLongitudes"
-              (completeMethod)="getMatchingWestLongitudes($event)"
-              [size]="10"
-              placeholder="ex:  -105.50"
-              emptyMessage="No maps found"
-              [minLength]="1">
-            </p-autoComplete>
-          </label>
-          <button type="button" (click)="getByArea()" [disabled]="! enableSearchByArea()">Search</button>
-          <button type="button" (click)="areaSearchParams.clear()">Clear</button>
-        </p-tabPanel>
-      </p-tabView>
-    </div>
-    <div>
-      <p-table
-        [value]="searchResults"
-        [paginator]="true"
-        [rows]="10"
-        pageLinks="10"
-        [lazy]="true"
-        [totalRecords]="totalRecords"
-        [loading]="loading"
-        (onLazyLoad)="lazyLoadMaps($event)">
-        <ng-template pTemplate="header">
-          <tr>
-            <th *ngFor="let col of cols" [pSortableColumn]="col.field">
-              {{col.header}}
-              <p-sortIcon [field]="col.field" ariaLabel="Activate to sortField" ariaLabelDesc="Activate to sortField in descending order" ariaLabelAsc="Activate to sortField in ascending order"></p-sortIcon>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-ntsMap>
-          <tr (click)="mapSelected(ntsMap)" [className]="getRowStyleClass(ntsMap)">
-            <td>{{ntsMap.name}}</td>
-            <td>{{ntsMap.snippet}}</td>
-            <td>{{ntsMap.parent}}</td>
-            <td>{{ntsMap.north}}</td>
-            <td>{{ntsMap.south}}</td>
-            <td>{{ntsMap.east}}</td>
-            <td>{{ntsMap.west}}</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <div>Search found no maps</div>
-        </ng-template>
-      </p-table>
-    </div>
+  <div class="info">
+    <span class="info-action-button">
+      <i class="info-action-button__icon" (click)="showInfoDialog()"></i>
+    </span>
+  </div>
+  <div class="search">
+    <span class="search-action-button">
+      <i class="search-action-button__icon" (click)="op2.show($event)"></i>
+    </span>
   </div>
 </div>
+<p-overlayPanel #op2 [showCloseIcon]="true" [dismissable]="false">
+  <p-table
+    [value]="searchResults"
+    [paginator]="true"
+    [rows]="5"
+    pageLinks="10"
+    [lazy]="true"
+    [totalRecords]="totalRecords"
+    [loading]="loading"
+    (onLazyLoad)="lazyLoadMaps($event);"
+    [style]="{width: '750px'}">
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngFor="let col of cols" [pSortableColumn]="col.field">
+          {{col.header}}
+          <p-sortIcon
+            [field]="col.field"
+            ariaLabel="Activate to sort field"
+            ariaLabelDesc="Activate to sort field in descending order"
+            ariaLabelAsc="Activate to sort field in ascending order">
+          </p-sortIcon>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <p-autoComplete
+            id="nameInput"
+            [(ngModel)]="nameSearchParams.name"
+            [suggestions]="matchingNames"
+            (completeMethod)="getMatchingNames($event)"
+            [size]="10"
+            placeholder="ex:  72P14"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+        <th>
+          <p-autoComplete
+            id="snippetInput"
+            [(ngModel)]="nameSearchParams.snippet"
+            [suggestions]="matchingSnippets"
+            (completeMethod)="getMatchingSnippets($event)"
+            [size]="10"
+            placeholder="ex:  LANIGAN"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+        <th>
+          <p-autoComplete
+            id="northInput"
+            [(ngModel)]="areaSearchParams.north"
+            [suggestions]="matchingNorthLatitudes"
+            (completeMethod)="getMatchingNorthLatitudes($event)"
+            [size]="10"
+            placeholder="ex:  52"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+        <th>
+          <p-autoComplete
+            id="southInput"
+            [(ngModel)]="areaSearchParams.south"
+            [suggestions]="matchingSouthLatitudes"
+            (completeMethod)="getMatchingSouthLatitudes($event)"
+            [size]="10"
+            placeholder="ex:  51.75"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+        <th>
+          <p-autoComplete
+            id="eastInput"
+            [(ngModel)]="areaSearchParams.east"
+            [suggestions]="matchingEastLongitudes"
+            (completeMethod)="getMatchingEastLongitudes($event)"
+            [size]="10"
+            placeholder="ex:  -105"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+        <th>
+          <p-autoComplete
+            id="westInput"
+            [(ngModel)]="areaSearchParams.west"
+            [suggestions]="matchingWestLongitudes"
+            (completeMethod)="getMatchingWestLongitudes($event)"
+            [size]="10"
+            placeholder="ex:  -105.50"
+            emptyMessage="No maps found"
+            [minLength]="1"
+            (keydown)="keyPressed($event)">
+          </p-autoComplete>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ntsMap>
+      <tr (click)="mapSelected(ntsMap)" [className]="getRowStyleClass(ntsMap)">
+        <td>{{ntsMap.name}}</td>
+        <td pTooltip="{{ ntsMap.snippet }}" tooltipPosition="top" showDelay="250">
+          {{getDisplayName(ntsMap.snippet)}}
+        </td>
+        <td>{{ntsMap.north}}</td>
+        <td>{{ntsMap.south}}</td>
+        <td>{{ntsMap.east}}</td>
+        <td>{{ntsMap.west}}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <div>Search found no maps</div>
+    </ng-template>
+  </p-table>
+</p-overlayPanel>
+<p-dialog
+  [(visible)]="displayInfo"
+  [style]="{width: '800px', height: '600px'}"
+  [modal]="true">
+  <p-header>
+    NTS Lookup ({{ version }})
+  </p-header>
+  <div>
+    This application lets you search and view the boundaries of National Topographic System (NTS) maps, a
+    system used by Natural Resources Canada for providing general topographic maps of the country.
+  </div>
+  <div>
+    A map sheet is classified by a string containing a number identifying the 1:1,000,000 scale <span>map series</span>
+    that contains the sheet (e.g., 30), a letter identifying a 1:250,000 scale <span>map area</span> (e.g., M), and
+    finally a number identifying the 1:50,000 scale <span>map sheet</span> itself.  The town of Lanigan, Saskatchewan,
+    for example, is found on the map 72P14.
+  </div>
+  <div>
+    In addition to its name, an NTS map has north, south, east, and west coordinates (expressed in terms of
+    latitude and longitude), as well as a title.  The coordinates that bound 72P14 are:
+    <ul>
+      <li>n = 52 lat</li>
+      <li>s = 51.75 lat</li>
+      <li>e = -105 lng</li>
+      <li>w = -105.5 lng</li>
+    </ul>
+    and the title is <span>LANIGAN</span>.
+  </div>
+  <div>
+    To use this application, press the search icon, enter a combination of the name, title, and coordinates
+    of the maps you want to locate, and press return.  You can sort and page through the results and can click
+    on individual maps to see their boundaries.
+  </div>
+  <div>
+    Some other comments:
+    <ul>
+      <li>If the search results get in the way of the map, just close the control and press the search icon later when
+        you want to resume working with it.</li>
+      <li>When searching on a name or title, a left-most substring search is performed.  Searching on a title
+      value of <span>LANG</span> would result in <span>LANG RIVER</span>, <span>LANGRUTH</span>, <span>LANGENBURG</span>,
+      etc.</li>
+      <li>When searching on a coordinate, a left-most matching-digit search is performed.  Search on an coordinate
+      of <span>52.2</span> would result in <span>52.20</span>, <span>52.25</span>, <span>52.26</span>, etc.</li>
+      <li>When searching on more than one field, only records that match all supplied will be returned.</li>
+    </ul>
+  </div>
+  <p-footer>
+    <button type="button" pButton icon="pi pi-check" (click)="hideInfoDialog()" label="Close"></button>
+  </p-footer>
+</p-dialog>

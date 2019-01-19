@@ -7,8 +7,17 @@ import {FormsModule} from '@angular/forms';
 import {AgmCoreModule} from '@agm/core';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {AutoCompleteModule, TabViewModule} from 'primeng/primeng';
+import {
+  AutoCompleteModule,
+  ButtonModule,
+  DialogModule,
+  OverlayPanelModule,
+  SidebarModule,
+  TabViewModule,
+  TooltipModule
+} from 'primeng/primeng';
 import {TableModule} from 'primeng/table';
+import { AgmSnazzyInfoWindowModule } from '@agm/snazzy-info-window';
 
 @NgModule({
   declarations: [
@@ -18,14 +27,20 @@ import {TableModule} from 'primeng/table';
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyC1iO-vHZ4AdR3oriq_0OXkOv2NDzk7jQU'
     }),
+    AgmSnazzyInfoWindowModule,
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
     AutoCompleteModule,
+    ButtonModule,
+    DialogModule,
+    OverlayPanelModule,
+    SidebarModule,
     TableModule,
-    TabViewModule
+    TabViewModule,
+    TooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]
