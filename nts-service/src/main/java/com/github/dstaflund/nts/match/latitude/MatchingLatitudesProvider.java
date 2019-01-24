@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.dstaflund.nts.NtsMap.MatchingLatitudesContract.QUERY_NAME;
-
 final class MatchingLatitudesProvider {
 
     private MatchingLatitudesProvider(){
@@ -19,7 +17,7 @@ final class MatchingLatitudesProvider {
     static List<Float> findMatchingLatitudes(MatchingLatitudesParams ctx) {
         if (ctx == null || ctx.getLatitude() == null || ctx.getLatitude().isEmpty()) return Collections.emptyList();
         List<BigDecimal> results = QueryExecuter.executeQuery((Session session) ->
-            session.getNamedNativeQuery(QUERY_NAME)
+            session.getNamedNativeQuery("NtsMap.NativeQuery.MatchingLatitudes")
                 .setParameter(1, ctx.getLatitude().trim().replace("+", "") + "%")
                 .setParameter(2, ctx.getLatitude().trim().replace("+", "") + "%")
         );

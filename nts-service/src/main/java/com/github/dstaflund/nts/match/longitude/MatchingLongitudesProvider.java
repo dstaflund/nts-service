@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.dstaflund.nts.NtsMap.MatchingLongitudesContract.QUERY_NAME;
-
 final class MatchingLongitudesProvider {
 
     private MatchingLongitudesProvider(){
@@ -19,7 +17,7 @@ final class MatchingLongitudesProvider {
     static List<Float> findMatchingLongitudes(MatchingLongitudesParams ctx) {
         if (ctx == null || ctx.getLongitude() == null || ctx.getLongitude().isEmpty()) return Collections.emptyList();
         List<BigDecimal> results = QueryExecuter.executeQuery((Session session) ->
-            session.getNamedNativeQuery(QUERY_NAME)
+            session.getNamedNativeQuery("NtsMap.NativeQuery.MatchingLongitudes")
                 .setParameter(1, ctx.getLongitude().trim().replace("+", "") + "%")
                 .setParameter(2, ctx.getLongitude().trim().replace("+", "") + "%")
         );

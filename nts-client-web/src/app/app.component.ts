@@ -2,9 +2,7 @@ import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} fr
 import {AgmMap, LatLngBounds, LatLngLiteral} from '@agm/core';
 import {NtsMapService} from './services/nts-map.service';
 import {NtsMap} from './models/nts-map';
-import {AreaSearchParams} from './models/area-search-params';
-import {CoordinateSearchParams} from './models/coordinate-search-params';
-import {NameSearchParams} from './models/name-search-params';
+import {SearchParams} from './models/search-params';
 import {PagingData} from './models/paging-data';
 import {LazyLoadEvent, MenuItem} from 'primeng/api';
 import {OverlayPanel} from 'primeng/primeng';
@@ -39,9 +37,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   mapTypeControlOptions = { position: ControlPosition.TOP_LEFT } as MapTypeControlOptions;
   zoomControlOptions = { position: ControlPosition.RIGHT_CENTER } as ZoomControlOptions;
 
-  nameSearchParams = new NameSearchParams();
-  coordinateSearchParams = new CoordinateSearchParams();
-  areaSearchParams = new AreaSearchParams();
+  searchParams = new SearchParams();
 
   matchingNames: string[];
   matchingSnippets: string[];
@@ -117,13 +113,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onMapClick(coords: LatLngLiteral) {
-    this.coordinateSearchParams.lat = coords.lat;
-    this.coordinateSearchParams.lng = coords.lng;
-    this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
-      this.totalRecords = maps.totalCount;
-      this.searchResults = maps.data;
-      this.loading = false;
-    });
+    // this.coordinateSearchParams.lat = coords.lat;
+    // this.coordinateSearchParams.lng = coords.lng;
+    // this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
+    //   this.totalRecords = maps.totalCount;
+    //   this.searchResults = maps.data;
+    //   this.loading = false;
+    // });
   }
 
   onBoundsChange(bounds:  LatLngBounds) {
@@ -147,14 +143,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ntsMapService.getMatchingSnippets(event.query).subscribe(snippets => this.matchingSnippets = snippets);
   }
 
-  getMatchingLatitudes(event) {
-    this.ntsMapService.getMatchingLatitudes(event.query).subscribe(latitudes => this.matchingLatitudes = latitudes);
-  }
-
-  getMatchingLongitudes(event) {
-    this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingLongitudes = longitudes);
-  }
-
   getMatchingNorthLatitudes(event) {
     this.ntsMapService.getMatchingLatitudes(event.query).subscribe(latitudes => this.matchingNorthLatitudes = latitudes);
   }
@@ -169,33 +157,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getMatchingWestLongitudes(event) {
     this.ntsMapService.getMatchingLongitudes(event.query).subscribe(longitudes => this.matchingWestLongitudes = longitudes);
-  }
-
-  getByName() {
-    this.lazyLoadMaps(null);
-  }
-
-  enableSearchByName(): boolean {
-    return true;
-    // return this.nameSearchParams.isValid();
-  }
-
-  getByCoordinate() {
-    this.lazyLoadMaps(null);
-  }
-
-  enableSearchByCoordinate(): boolean {
-    return true;
-    // return this.coordinateSearchParams.isValid();
-  }
-
-  getByArea() {
-    this.lazyLoadMaps(null);
-  }
-
-  enableSearchByArea(): boolean {
-    return true;
-    // return this.areaSearchParams.isValid();
   }
 
   mapSelected(ntsMap: NtsMap) {
@@ -217,15 +178,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  tabChanged(event: any) {
-    this.searchType = event.index;
-    this.areaSearchParams.clear();
-    this.coordinateSearchParams.clear();
-    this.nameSearchParams.clear();
-  }
-
   lazyLoadMaps(event: LazyLoadEvent) {
-    console.log(event);
     if (! this.pageInitialized) {
       this.pageInitialized = true;
       return;
@@ -243,37 +196,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     if (! this.searchResults || this.searchResults.length < 5) {
       this.op2.visible = false;
     }
-    if (this.searchType === sAreaSearch) {
-      this.ntsMapService.getByArea(this.pagingData, this.areaSearchParams).subscribe(maps => {
-        this.totalRecords = maps.totalCount;
-        this.searchResults = maps.data;
-        this.loading = false;
-        if (! this.searchResults || this.searchResults.length < 5) {
-          this.op2.visible = false;
-        }
-        this.op2.visible = true;
-      });
-    } else if (this.searchType === sCoordSearch) {
-      this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
-        this.totalRecords = maps.totalCount;
-        this.searchResults = maps.data;
-        this.loading = false;
-        if (! this.searchResults || this.searchResults.length < 5) {
-          this.op2.visible = false;
-        }
-        this.op2.visible = true;
-      });
-    } else if (this.searchType === sNameSearch) {
-      this.ntsMapService.getByName(this.pagingData, this.nameSearchParams).subscribe(maps => {
-        this.totalRecords = maps.totalCount;
-        this.searchResults = maps.data;
-        this.loading = false;
-        if (! this.searchResults || this.searchResults.length < 5) {
-          this.op2.visible = false;
-        }
-        this.op2.visible = true;
-      });
-    }
+    this.ntsMapService.getByName(this.pagingData, this.searchParams).subscribe(maps => {
+      this.totalRecords = maps.totalCount;
+      this.searchResults = maps.data;
+      this.loading = false;
+      if (! this.searchResults || this.searchResults.length < 5) {
+        this.op2.visible = false;
+      }
+      this.op2.visible = true;
+    });
   }
 
   getRowStyleClass(currentMap: NtsMap): string {
@@ -295,17 +226,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     return (! snippet || snippet.length < 16)
       ? snippet
       : snippet.substr(0, 12) + '...';
-  }
-
-  getSnippetTitle(ntsMap: NtsMap) {
-    if (! ntsMap) {
-      return;
-    }
-    let title = ntsMap.name;
-    if (ntsMap.snippet && ntsMap.snippet !== ntsMap.name) {
-      title += ' (' + ntsMap.snippet + ')';
-    }
-    return title;
   }
 
   showInfoDialog() {

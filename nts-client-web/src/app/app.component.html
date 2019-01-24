@@ -29,19 +29,6 @@
           [strokeOpacity]="1.0"
           [strokeWeight]="3"
           pTooltip="{{ ntsMap.snippet }}" tooltipPosition="top" showDelay="250">
-          <!--
-          <agm-snazzy-info-window
-            [isOpen]="true"
-            [backgroundColor]="'bisque'"
-            [latitude]="(ntsMap.north + ntsMap.south) / 2"
-            [longitude]="(ntsMap.east + ntsMap.west) / 2"
-            [maxWidth]="300"
-            [closeWhenOthersOpen]="true">
-            <ng-template>
-              {{ getSnippetTitle(ntsMap) }}
-            </ng-template>
-          </agm-snazzy-info-window>
-          -->
         </agm-rectangle>
       </ng-container>
     </agm-map>
@@ -66,7 +53,7 @@
     [lazy]="true"
     [totalRecords]="totalRecords"
     [loading]="loading"
-    (onLazyLoad)="lazyLoadMaps($event);"
+    (onLazyLoad)="lazyLoadMaps($event)"
     [style]="{width: '750px'}">
     <ng-template pTemplate="header">
       <tr>
@@ -84,7 +71,7 @@
         <th>
           <p-autoComplete
             id="nameInput"
-            [(ngModel)]="nameSearchParams.name"
+            [(ngModel)]="searchParams.name"
             [suggestions]="matchingNames"
             (completeMethod)="getMatchingNames($event)"
             [size]="10"
@@ -97,7 +84,7 @@
         <th>
           <p-autoComplete
             id="snippetInput"
-            [(ngModel)]="nameSearchParams.snippet"
+            [(ngModel)]="searchParams.snippet"
             [suggestions]="matchingSnippets"
             (completeMethod)="getMatchingSnippets($event)"
             [size]="10"
@@ -110,7 +97,7 @@
         <th>
           <p-autoComplete
             id="northInput"
-            [(ngModel)]="areaSearchParams.north"
+            [(ngModel)]="searchParams.north"
             [suggestions]="matchingNorthLatitudes"
             (completeMethod)="getMatchingNorthLatitudes($event)"
             [size]="10"
@@ -123,7 +110,7 @@
         <th>
           <p-autoComplete
             id="southInput"
-            [(ngModel)]="areaSearchParams.south"
+            [(ngModel)]="searchParams.south"
             [suggestions]="matchingSouthLatitudes"
             (completeMethod)="getMatchingSouthLatitudes($event)"
             [size]="10"
@@ -136,7 +123,7 @@
         <th>
           <p-autoComplete
             id="eastInput"
-            [(ngModel)]="areaSearchParams.east"
+            [(ngModel)]="searchParams.east"
             [suggestions]="matchingEastLongitudes"
             (completeMethod)="getMatchingEastLongitudes($event)"
             [size]="10"
@@ -149,7 +136,7 @@
         <th>
           <p-autoComplete
             id="westInput"
-            [(ngModel)]="areaSearchParams.west"
+            [(ngModel)]="searchParams.west"
             [suggestions]="matchingWestLongitudes"
             (completeMethod)="getMatchingWestLongitudes($event)"
             [size]="10"

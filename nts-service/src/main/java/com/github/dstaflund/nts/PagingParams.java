@@ -35,35 +35,35 @@ public class PagingParams implements Serializable {
     @Max(value = 1, message = "SortOrder must be -1 (desc) or 1 (asc)")
     private Integer sortOrder;
 
-    Integer getLimit() {
+    public Integer getLimit() {
         return limit;
     }
 
-    void setLimit(Integer limit) {
+    public void setLimit(Integer limit) {
         this.limit = limit;
     }
 
-    Integer getOffset() {
+    public Integer getOffset() {
         return offset;
     }
 
-    void setOffset(Integer offset) {
+    public void setOffset(Integer offset) {
         this.offset = offset;
     }
 
-    String getSortField() {
+    public String getSortField() {
         return sortField;
     }
 
-    void setSortField(String sortField) {
+    public void setSortField(String sortField) {
         this.sortField = sortField;
     }
 
-    Integer getSortOrder() {
+    public Integer getSortOrder() {
         return sortOrder;
     }
 
-    void setSortOrder(Integer sortOrder) {
+    public void setSortOrder(Integer sortOrder) {
         this.sortOrder = sortOrder;
     }
 

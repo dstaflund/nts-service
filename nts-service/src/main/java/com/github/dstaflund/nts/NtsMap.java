@@ -1,5 +1,8 @@
 package com.github.dstaflund.nts;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,25 +18,71 @@ import java.util.Objects;
 @Table(name="nts_maps", schema="public")
 @NamedQueries({
     @NamedQuery(
-        name = "NtsMap.MatchingNames",
-        query = "   SELECT DISTINCT m.name"
-            + "     FROM NtsMap m"
-            + "    WHERE m.searchName LIKE :query"
-            + " ORDER BY m.name ASC"
+        name = "NtsMap.Query.MatchingNames",
+        query = "SELECT m.name FROM NtsMap m WHERE m.searchName LIKE :query ORDER BY m.name ASC"
     ),
     @NamedQuery(
-        name = "NtsMap.MatchingSnippets",
-        query = "   SELECT DISTINCT m.snippet"
-            + "     FROM NtsMap m"
-            + "    WHERE m.snippet LIKE :query"
-            + " ORDER BY m.snippet ASC"
+        name = "NtsMap.Query.MatchingSnippets",
+        query = "SELECT m.snippet FROM NtsMap m WHERE m.snippet LIKE :query ORDER BY m.snippet ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Count.NtsMaps",
+        query = "SELECT COUNT(m) FROM NtsMap m"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.Name.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.name ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.Name.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.name DESC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.Snippet.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.snippet ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.Snippet.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.snippet DESC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.North.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.north ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.North.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.north DESC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.South.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.south ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.South.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.south DESC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.East.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.east ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.East.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.east DESC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.West.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.west ASC"
+    ),
+    @NamedQuery(
+        name = "NtsMap.Query.NtsMaps.West.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.west DESC"
     )
 })
 
 // These are native queries since HQL doesn't support UNION yet
 @NamedNativeQueries({
     @NamedNativeQuery(
-        name = "NtsMap.MatchingLatitudes",
+        name = "NtsMap.NativeQuery.MatchingLatitudes",
         query = " SELECT DISTINCT x.latitude"
             + "     FROM ("
             + "             SELECT north AS latitude"
@@ -47,7 +96,7 @@ import java.util.Objects;
             + " ORDER BY x.latitude ASC"
     ),
     @NamedNativeQuery(
-        name = "NtsMap.MatchingLongitudes",
+        name = "NtsMap.NativeQuery.MatchingLongitudes",
         query = " SELECT DISTINCT x.longitude"
             + "     FROM ("
             + "             SELECT east AS longitude"
@@ -63,62 +112,44 @@ import java.util.Objects;
 })
 public class NtsMap implements Serializable {
 
-    public static class MatchingNamesContract {
-        public static final String QUERY_NAME = "NtsMap.MatchingNames";
-        public static final String PARAM_QUERY = "query";
-    }
-
-    public static class MatchingSnippetsContract {
-        public static final String QUERY_NAME = "NtsMap.MatchingSnippets";
-        public static final String PARAM_QUERY = "query";
-    }
-
-    public static class MatchingLatitudesContract {
-        public static final String QUERY_NAME = "NtsMap.MatchingLatitudes";
-    }
-
-    public static class MatchingLongitudesContract {
-        public static final String QUERY_NAME = "NtsMap.MatchingLongitudes";
-    }
-
     @Id
     @Column(name = "name", unique = true, nullable = false, insertable = false, updatable = false, length = 6)
     private String name;
 
+    @JsonProperty("title")
     @Column(name = "snippet", insertable = false, updatable = false, length = 40)
     private String snippet;
 
-    @Column(name = "parent", insertable = false, updatable = false, length = 6)
-    private String parent;
-
-    @Column(name = "north", insertable = false, updatable = false, precision = 5, scale = 2)
+    @Column(name = "north", nullable = false, insertable = false, updatable = false, precision = 5, scale = 2)
     private float north;
 
-    @Column(name = "south", insertable = false, updatable = false, precision = 5, scale = 2)
+    @Column(name = "south", nullable = false, insertable = false, updatable = false, precision = 5, scale = 2)
     private float south;
 
-    @Column(name = "east", insertable = false, updatable = false, precision = 5, scale = 2)
+    @Column(name = "east", nullable = false, insertable = false, updatable = false, precision = 5, scale = 2)
     private float east;
 
-    @Column(name = "west", insertable = false, updatable = false, precision = 5, scale = 2)
+    @Column(name = "west", nullable = false, insertable = false, updatable = false, precision = 5, scale = 2)
     private float west;
 
-    @Column(name = "search_name", unique = true, insertable = false, updatable = false, length = 6)
+    @JsonIgnore
+    @Column(name = "search_name", nullable = false, unique = true, insertable = false, updatable = false, length = 6)
     private String searchName;
 
-    @Column(name = "search_parent", insertable = false, updatable = false, length = 4)
-    private String searchParent;
-
-    @Column(name = "search_north", insertable = false, updatable = false, length = 7)
+    @JsonIgnore
+    @Column(name = "search_north", nullable = false, insertable = false, updatable = false, length = 7)
     private String searchNorth;
 
-    @Column(name = "search_south", insertable = false, updatable = false, length = 7)
+    @JsonIgnore
+    @Column(name = "search_south", nullable = false, insertable = false, updatable = false, length = 7)
     private String searchSouth;
 
-    @Column(name = "search_east", insertable = false, updatable = false, length = 7)
+    @JsonIgnore
+    @Column(name = "search_east", nullable = false, insertable = false, updatable = false, length = 7)
     private String searchEast;
 
-    @Column(name = "search_west", insertable = false, updatable = false, length = 7)
+    @JsonIgnore
+    @Column(name = "search_west", nullable = false, insertable = false, updatable = false, length = 7)
     private String searchWest;
 
     public String getName() {
@@ -169,28 +200,12 @@ public class NtsMap implements Serializable {
         this.west = west;
     }
 
-    public String getParent() {
-        return parent;
-    }
-
-    public void setParent(String parent) {
-        this.parent = parent;
-    }
-
     public String getSearchName() {
         return searchName;
     }
 
     public void setSearchName(String searchName) {
         this.searchName = searchName;
-    }
-
-    public String getSearchParent() {
-        return searchParent;
-    }
-
-    public void setSearchParent(String searchParent) {
-        this.searchParent = searchParent;
     }
 
     public String getSearchNorth() {
@@ -242,10 +257,9 @@ public class NtsMap implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "NtsMap(name=<%s>, snippet=<%s>, parent=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
+            "NtsMap(name=<%s>, snippet=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
             name,
             snippet,
-            parent,
             north,
             south,
             east,

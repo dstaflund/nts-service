@@ -1,73 +1,64 @@
 package com.github.dstaflund.nts;
 
+import com.github.dstaflund.nts.search.SearchParams;
+
 import java.io.Serializable;
 
 public class PagedResponse<T> implements Serializable {
-    private Integer limit;
-    private Integer offset;
-    private String sort;
-    private Long totalCount;
-    private T data;
+    private PagingParams pagingParams;
+    private SearchParams searchParams;
+    private Long numberOfMatches;
+    private T searchResults;
 
-    public Integer getLimit() {
-        return limit;
+    public PagingParams getPagingParams() {
+        return pagingParams;
     }
 
-    public void setLimit(Integer limit) {
-        this.limit = limit;
+    public void setPagingParams(PagingParams pagingParams) {
+        this.pagingParams = pagingParams;
     }
 
-    public Integer getOffset() {
-        return offset;
+    public SearchParams getSearchParams() {
+        return searchParams;
     }
 
-    public void setOffset(Integer offset) {
-        this.offset = offset;
+    public void setSearchParams(SearchParams searchParams) {
+        this.searchParams = searchParams;
     }
 
-    public String getSort() {
-        return sort;
+    public Long getNumberOfMatches() {
+        return numberOfMatches;
     }
 
-    public void setSort(String sort) {
-        this.sort = sort;
+    public void setNumberOfMatches(Long numberOfMatches) {
+        this.numberOfMatches = numberOfMatches;
     }
 
-    public Long getTotalCount() {
-        return totalCount;
+    public T getSearchResults() {
+        return searchResults;
     }
 
-    public void setTotalCount(Long totalCount) {
-        this.totalCount = totalCount;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
+    public void setSearchResults(T searchResults) {
+        this.searchResults = searchResults;
     }
 
     @Override
     public String toString() {
         return String.format(
-            "PagedResponse(limit=<%d>, offset=<%d>, sort=<%s>, totalCount=<%d>, data=<%s>)",
-            limit,
-            offset,
-            sort,
-            totalCount,
-            data
+            "PagedResponse(pagingParams=<%s>, searchParams=<%s>, numberOfMatches=<%d>, searchResults=<%s>)",
+            pagingParams,
+            searchParams,
+            numberOfMatches,
+            searchResults
         );
     }
 
-    public static <T> PagedResponse<T> newInstance(PagingParams paging, Long count, T data){
+    public static <T> PagedResponse<T> newInstance(PagingParams paging, SearchParams searchParams, Long count, T data){
         PagedResponse<T> res = new PagedResponse<>();
-        paging.setLimit(paging.getLimit());
-        paging.setOffset(paging.getOffset());
-        paging.setSortField(paging.getSortField());
-        res.setTotalCount(count);
-        res.setData(data);
+        res.setPagingParams(paging);
+        res.setSearchParams(searchParams);
+        res.setNumberOfMatches(count);
+        res.setSearchResults(data);
         return res;
     }
 }
