@@ -1,7 +1,7 @@
 -- 1.  Run this first
 CREATE TABLE nts_maps (
                         name		VARCHAR(6)    PRIMARY KEY,
-                        snippet	VARCHAR(40)   NULL,
+                        title	VARCHAR(40)   NULL,
                         parent  VARCHAR(6)    NULL,
                         north		DECIMAL(5,2)  NOT NULL,
                         south		DECIMAL(5,2)  NOT NULL,

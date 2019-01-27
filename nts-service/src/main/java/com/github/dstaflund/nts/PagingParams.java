@@ -22,8 +22,8 @@ public class PagingParams implements Serializable {
 
     @DefaultValue("name")
     @Pattern(
-        regexp = "^(name|snippet|parent|north|south|east|west)$",
-        message = "SortField must be 'name', 'snippet', 'parent', 'north', 'south', 'east', or 'west'",
+        regexp = "^(name|title|parent|north|south|east|west)$",
+        message = "SortField must be 'name', 'title', 'parent', 'north', 'south', 'east', or 'west'",
         flags = Pattern.Flag.CASE_INSENSITIVE
     )
     @QueryParam("sortField")

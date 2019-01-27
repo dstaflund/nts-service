@@ -14,6 +14,6 @@ public class MatchingNamesService {
 
     @GET
     public List<String> getMatchingNames(@Valid @BeanParam MatchingNamesParams ctx){
-        return MatchingNamesProvider.findMatchingSnippets(ctx);
+        return MatchingNamesProvider.findMatchingTitles(ctx);
     }
 }

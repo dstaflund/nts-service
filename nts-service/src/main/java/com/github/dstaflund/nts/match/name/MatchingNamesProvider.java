@@ -11,7 +11,7 @@ final class MatchingNamesProvider {
     private MatchingNamesProvider(){
     }
 
-    static List<String> findMatchingSnippets(MatchingNamesParams ctx) {
+    static List<String> findMatchingTitles(MatchingNamesParams ctx) {
         if (ctx == null || ctx.getName() == null || ctx.getName().isEmpty()) return Collections.emptyList();
         return QueryExecuter.executeQuery((Session session) ->
             session

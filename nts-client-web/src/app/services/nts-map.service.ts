@@ -8,7 +8,7 @@ import {PagingData} from '../models/paging-data';
 
 const sBaseUri = 'http://127.0.0.1:8080/Gradle___com_github_dstaflund___nts_service_1_0_SNAPSHOT_war__exploded_/json';
 const sGetMatchingNames = sBaseUri + '/matching/names';
-const sGetMatchingSnippets = sBaseUri + '/matching/snippets';
+const sGetMatchingTitles = sBaseUri + '/matching/titles';
 const sGetMatchingLatitudes = sBaseUri + '/matching/latitudes';
 const sGetMatchingLongitudes = sBaseUri + '/matching/longitudes';
 const sByNameUrl = sBaseUri + '/nts';
@@ -37,9 +37,9 @@ export class NtsMapService {
     return this.http.get<string[]>(sGetMatchingNames, { params });
   }
 
-  getMatchingSnippets(query: any): Observable<string[]> {
-    const params = new HttpParams().set('snippet', String(query));
-    return this.http.get<string[]>(sGetMatchingSnippets, { params });
+  getMatchingTitles(query: any): Observable<string[]> {
+    const params = new HttpParams().set('title', String(query));
+    return this.http.get<string[]>(sGetMatchingTitles, { params });
   }
 
   getMatchingLatitudes(query: any): Observable<number[]> {

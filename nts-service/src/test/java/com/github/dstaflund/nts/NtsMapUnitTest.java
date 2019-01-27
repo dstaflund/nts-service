@@ -103,13 +103,13 @@ public class NtsMapUnitTest {
     }
 
     @RunWith(JMockit.class)
-    public static class SnippetField {
+    public static class TitleField {
         private Field mField;
         private Column mColumn;
 
         @Before
         public void initialize() throws NoSuchFieldException {
-            mField = NtsMap.class.getDeclaredField("snippet");
+            mField = NtsMap.class.getDeclaredField("title");
             mField.setAccessible(true);
             mColumn = mField.getAnnotation(Column.class);
         }
@@ -120,8 +120,8 @@ public class NtsMapUnitTest {
         }
 
         @Test
-        public void mapsToSnippetColumn() {
-            assertEquals("snippet", mColumn.name());
+        public void mapsToTitleColumn() {
+            assertEquals("title", mColumn.name());
         }
 
         @Test

@@ -28,7 +28,7 @@
           [strokePosition]="0"
           [strokeOpacity]="1.0"
           [strokeWeight]="3"
-          pTooltip="{{ ntsMap.snippet }}" tooltipPosition="top" showDelay="250">
+          pTooltip="{{ ntsMap.title }}" tooltipPosition="top" showDelay="250">
         </agm-rectangle>
       </ng-container>
     </agm-map>
@@ -51,7 +51,7 @@
     [rows]="5"
     pageLinks="10"
     [lazy]="true"
-    [totalRecords]="totalRecords"
+    [totalRecords]="numberOfMatches"
     [loading]="loading"
     (onLazyLoad)="lazyLoadMaps($event)"
     [style]="{width: '750px'}">
@@ -83,10 +83,10 @@
         </th>
         <th>
           <p-autoComplete
-            id="snippetInput"
-            [(ngModel)]="searchParams.snippet"
-            [suggestions]="matchingSnippets"
-            (completeMethod)="getMatchingSnippets($event)"
+            id="titleInput"
+            [(ngModel)]="searchParams.title"
+            [suggestions]="matchingTitles"
+            (completeMethod)="getMatchingTitles($event)"
             [size]="10"
             placeholder="ex:  LANIGAN"
             emptyMessage="No maps found"
@@ -151,8 +151,8 @@
     <ng-template pTemplate="body" let-ntsMap>
       <tr (click)="mapSelected(ntsMap)" [className]="getRowStyleClass(ntsMap)">
         <td>{{ntsMap.name}}</td>
-        <td pTooltip="{{ ntsMap.snippet }}" tooltipPosition="top" showDelay="250">
-          {{getDisplayName(ntsMap.snippet)}}
+        <td pTooltip="{{ ntsMap.title }}" tooltipPosition="top" showDelay="250">
+          {{getDisplayName(ntsMap.title)}}
         </td>
         <td>{{ntsMap.north}}</td>
         <td>{{ntsMap.south}}</td>
@@ -213,7 +213,7 @@
   </div>
   <div id="api-tab" *ngIf="selectedMenuItemName === 'API'">
     <div>
-      A JSON API can be used to search for NTS maps programmatically.
+      This site exposes a JSON API can be used to search for NTS maps programmatically.
     </div>
     <div>
       <div>

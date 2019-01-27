@@ -54,7 +54,7 @@ final class SearchQueryBuilder {
         return new StringBuilder()
             .append(" WHERE 1 = 1")
             .append(nameClause())
-            .append(snippetClause())
+            .append(titleClause())
             .append(northClause())
             .append(southClause())
             .append(eastClause())
@@ -68,10 +68,10 @@ final class SearchQueryBuilder {
             : " AND m.searchName LIKE '" + scrubMapName(searchParams.getName()) + "%'";
     }
 
-    private String snippetClause() {
-        return searchParams.getSnippet() == null
+    private String titleClause() {
+        return searchParams.getTitle() == null
             ? ""
-            : " AND m.snippet LIKE '" + scrubSnippet(searchParams.getSnippet()) + "%'";
+            : " AND m.title LIKE '" + scrubTitle(searchParams.getTitle()) + "%'";
     }
 
     private String northClause() {
@@ -115,7 +115,7 @@ final class SearchQueryBuilder {
             + (m.group(3) == null ? "" : (m.group(3).length() == 1 ? "0" + m.group(3) : m.group(3)));
     }
 
-    private static String scrubSnippet(String value){
+    private static String scrubTitle(String value){
         if (value == null || value.trim().isEmpty()) return null;
         return value.trim().toUpperCase();
     }

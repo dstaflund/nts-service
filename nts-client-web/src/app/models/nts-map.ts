@@ -1,7 +1,6 @@
 export class NtsMap {
   name: string;
-  snippet?: string;
-  parent?: string;
+  title?: string;
   north: number;
   south: number;
   east: number;

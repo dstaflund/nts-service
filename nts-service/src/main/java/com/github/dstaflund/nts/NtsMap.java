@@ -22,8 +22,8 @@ import java.util.Objects;
         query = "SELECT m.name FROM NtsMap m WHERE m.searchName LIKE :query ORDER BY m.name ASC"
     ),
     @NamedQuery(
-        name = "NtsMap.Query.MatchingSnippets",
-        query = "SELECT m.snippet FROM NtsMap m WHERE m.snippet LIKE :query ORDER BY m.snippet ASC"
+        name = "NtsMap.Query.MatchingTitles",
+        query = "SELECT m.title FROM NtsMap m WHERE m.title LIKE :query ORDER BY m.title ASC"
     ),
     @NamedQuery(
         name = "NtsMap.Count.NtsMaps",
@@ -38,12 +38,12 @@ import java.util.Objects;
         query = "SELECT m FROM NtsMap m ORDER BY m.name DESC"
     ),
     @NamedQuery(
-        name = "NtsMap.Query.NtsMaps.Snippet.Asc",
-        query = "SELECT m FROM NtsMap m ORDER BY m.snippet ASC"
+        name = "NtsMap.Query.NtsMaps.Title.Asc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.title ASC"
     ),
     @NamedQuery(
-        name = "NtsMap.Query.NtsMaps.Snippet.Desc",
-        query = "SELECT m FROM NtsMap m ORDER BY m.snippet DESC"
+        name = "NtsMap.Query.NtsMaps.Title.Desc",
+        query = "SELECT m FROM NtsMap m ORDER BY m.title DESC"
     ),
     @NamedQuery(
         name = "NtsMap.Query.NtsMaps.North.Asc",
@@ -118,7 +118,7 @@ public class NtsMap implements Serializable {
 
     @JsonProperty("title")
     @Column(name = "snippet", insertable = false, updatable = false, length = 40)
-    private String snippet;
+    private String title;
 
     @Column(name = "north", nullable = false, insertable = false, updatable = false, precision = 5, scale = 2)
     private float north;
@@ -160,12 +160,12 @@ public class NtsMap implements Serializable {
         this.name = name;
     }
 
-    public String getSnippet() {
-        return snippet;
+    public String getTitle() {
+        return title;
     }
 
-    public void setSnippet(String snippet) {
-        this.snippet = snippet;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public float getNorth() {
@@ -257,9 +257,9 @@ public class NtsMap implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "NtsMap(name=<%s>, snippet=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
+            "NtsMap(name=<%s>, title=<%s>, north=<%.2f>, south=<%.2f>, east=<%.2f>, west=<%.2f>)",
             name,
-            snippet,
+            title,
             north,
             south,
             east,

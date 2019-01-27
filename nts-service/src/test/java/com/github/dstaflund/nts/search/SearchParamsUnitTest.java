@@ -36,7 +36,7 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
             mParams.setNorth("52F");
             mParams.setSouth("51.75F");
             mParams.setEast("-105F");
@@ -67,7 +67,7 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
 
             mNorth = SearchParams.class.getDeclaredField("north");
             mNorth.setAccessible(true);
@@ -94,7 +94,7 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
 
             mSouth = SearchParams.class.getDeclaredField("south");
             mSouth.setAccessible(true);
@@ -121,7 +121,7 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
 
             mEast = SearchParams.class.getDeclaredField("east");
             mEast.setAccessible(true);
@@ -148,7 +148,7 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
 
             mWest = SearchParams.class.getDeclaredField("west");
             mWest.setAccessible(true);
@@ -161,11 +161,11 @@ public class SearchParamsUnitTest {
     }
 
     @RunWith(JMockit.class)
-    public static class SnippetField {
+    public static class TitleField {
         @Mocked LogManager mLogManager;
         @Mocked Logger mLogger;
 
-        Field mSnippet;
+        Field mTitle;
         SearchParams mParams;
         private Validator mValidator;
 
@@ -175,38 +175,38 @@ public class SearchParamsUnitTest {
 
             mParams = new SearchParams();
             mParams.setName("72P14");
-            mParams.setSnippet("LANIGAN");
+            mParams.setTitle("LANIGAN");
 
-            mSnippet = SearchParams.class.getDeclaredField("snippet");
-            mSnippet.setAccessible(true);
+            mTitle = SearchParams.class.getDeclaredField("title");
+            mTitle.setAccessible(true);
         }
 
         @Test
         public void getsValueFromNameQueryParameter(){
-            assertEquals("title", mSnippet.getAnnotation(QueryParam.class).value());
+            assertEquals("title", mTitle.getAnnotation(QueryParam.class).value());
         }
 
         @Test
         public void returnsErrorWhenLongerThan40Characters(){
-            mParams.setSnippet("12345678901234567890123456789012345678901");
+            mParams.setTitle("12345678901234567890123456789012345678901");
             assertFalse(mValidator.validate(mParams).isEmpty());
         }
 
         @Test
         public void doesNotReturnErrorWhen40Characters(){
-            mParams.setSnippet("1234567890123456789012345678901234567890");
+            mParams.setTitle("1234567890123456789012345678901234567890");
             assertTrue(mValidator.validate(mParams).isEmpty());
         }
 
         @Test
         public void doesNotReturnErrorWhenLessThan40Characters(){
-            mParams.setSnippet("123456789012345678901234567890123456789");
+            mParams.setTitle("123456789012345678901234567890123456789");
             assertTrue(mValidator.validate(mParams).isEmpty());
         }
 
         @Test
         public void doesNotReturnErrorWhen0Characters(){
-            mParams.setSnippet("");
+            mParams.setTitle("");
             assertTrue(mValidator.validate(mParams).isEmpty());
         }
     }

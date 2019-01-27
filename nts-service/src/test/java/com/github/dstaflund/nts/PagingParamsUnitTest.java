@@ -160,8 +160,8 @@ public class PagingParamsUnitTest {
         }
 
         @Test
-        public void acceptsSnippetAsValue(){
-            mParams.setSortField("snippet");
+        public void acceptsTitleAsValue(){
+            mParams.setSortField("title");
             assertTrue(mValidator.validate(mParams).isEmpty());
         }
 

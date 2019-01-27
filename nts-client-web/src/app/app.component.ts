@@ -9,10 +9,6 @@ import {OverlayPanel} from 'primeng/primeng';
 import {ControlPosition, MapTypeControlOptions, ZoomControlOptions} from '@agm/core/services/google-maps-types';
 import {environment} from '../environments/environment';
 
-const sAreaSearch = 2;
-const sCoordSearch = 1;
-const sNameSearch = 0;
-
 @Component({
   selector: 'nts-root',
   templateUrl: './app.component.html',
@@ -37,12 +33,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   mapTypeControlOptions = { position: ControlPosition.TOP_LEFT } as MapTypeControlOptions;
   zoomControlOptions = { position: ControlPosition.RIGHT_CENTER } as ZoomControlOptions;
 
-  searchParams = new SearchParams();
+  searchParams = {} as SearchParams;
 
   matchingNames: string[];
-  matchingSnippets: string[];
-  matchingLatitudes: number[];
-  matchingLongitudes: number[];
+  matchingTitles: string[];
   matchingNorthLatitudes: number[];
   matchingSouthLatitudes: number[];
   matchingEastLongitudes: number[];
@@ -53,7 +47,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   selectedMap: NtsMap;
 
   pagingData = new PagingData();
-  totalRecords = 0;
+  numberOfMatches = 0;
   loading: boolean;
 
   cols: any[];
@@ -67,7 +61,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   menuItems: MenuItem[];
   selectedMenuItemName = 'Intro';
 
-  private searchType = sNameSearch;
   private pageInitialized = false;
 
   constructor(private ntsMapService: NtsMapService) {
@@ -84,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.cols = [
       { field: 'name', header: 'Name' },
-      { field: 'snippet', header: 'Title' },
+      { field: 'title', header: 'Title' },
       { field: 'north', header: 'North' },
       { field: 'south', header: 'South' },
       { field: 'east', header: 'East' },
@@ -116,7 +109,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.coordinateSearchParams.lat = coords.lat;
     // this.coordinateSearchParams.lng = coords.lng;
     // this.ntsMapService.getByCoord(this.pagingData, this.coordinateSearchParams).subscribe(maps => {
-    //   this.totalRecords = maps.totalCount;
+    //   this.numberOfMatches = maps.totalCount;
     //   this.searchResults = maps.data;
     //   this.loading = false;
     // });
@@ -139,8 +132,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ntsMapService.getMatchingNames(event.query).subscribe(names => this.matchingNames = names);
   }
 
-  getMatchingSnippets(event) {
-    this.ntsMapService.getMatchingSnippets(event.query).subscribe(snippets => this.matchingSnippets = snippets);
+  getMatchingTitles(event) {
+    this.ntsMapService.getMatchingTitles(event.query).subscribe(snippets => this.matchingTitles = snippets);
   }
 
   getMatchingNorthLatitudes(event) {
@@ -197,8 +190,8 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       this.op2.visible = false;
     }
     this.ntsMapService.getByName(this.pagingData, this.searchParams).subscribe(maps => {
-      this.totalRecords = maps.totalCount;
-      this.searchResults = maps.data;
+      this.numberOfMatches = maps.numberOfMatches;
+      this.searchResults = maps.searchResults;
       this.loading = false;
       if (! this.searchResults || this.searchResults.length < 5) {
         this.op2.visible = false;
@@ -222,10 +215,10 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getDisplayName(snippet: string) {
-    return (! snippet || snippet.length < 16)
-      ? snippet
-      : snippet.substr(0, 12) + '...';
+  getDisplayName(title: string) {
+    return (! title || title.length < 16)
+      ? title
+      : title.substr(0, 12) + '...';
   }
 
   showInfoDialog() {

@@ -18,7 +18,7 @@ public class SearchParams implements Serializable {
         regexp = "^\\s*.{0,40}\\s*$",
         message = "Title cannot be longer than 40 characters"
     )
-    private String snippet;
+    private String title;
 
     @QueryParam("north")
     @Pattern(
@@ -56,12 +56,12 @@ public class SearchParams implements Serializable {
         this.name = name;
     }
 
-    public String getSnippet() {
-        return snippet;
+    public String getTitle() {
+        return title;
     }
 
-    public void setSnippet(String snippet) {
-        this.snippet = snippet;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     String getNorth() {
@@ -99,9 +99,9 @@ public class SearchParams implements Serializable {
     @Override
     public String toString() {
         return String.format(
-            "SearchParams(name=<%s>, snippet=<%s>, north=<%s>, south=<%s>, east=<%s>, west=<%s>)",
+            "SearchParams(name=<%s>, title=<%s>, north=<%s>, south=<%s>, east=<%s>, west=<%s>)",
             name,
-            snippet,
+            title,
             north,
             south,
             east,
