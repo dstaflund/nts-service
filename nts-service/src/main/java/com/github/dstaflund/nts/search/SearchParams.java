@@ -36,14 +36,14 @@ public class SearchParams implements Serializable {
 
     @QueryParam("east")
     @Pattern(
-        regexp = "^\\s*-?([0-9]{0,2})?\\.?([0-9]{0,2})?\\s*$",
+        regexp = "^\\s*-?([0-9]{0,3})?\\.?([0-9]{0,2})?\\s*$",
         message = "East cannot be more than 6 characters long and must "
     )
     private String east;
 
     @QueryParam("west")
     @Pattern(
-        regexp = "^\\s*-?([0-9]{0,2})?\\.?([0-9]{0,2})?\\s*$",
+        regexp = "^\\s*-?([0-9]{0,3})?\\.?([0-9]{0,2})?\\s*$",
         message = "West cannot be more than 6 characters long and must "
     )
     private String west;
