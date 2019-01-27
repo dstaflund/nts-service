@@ -120,8 +120,8 @@ public class NtsMapUnitTest {
         }
 
         @Test
-        public void mapsToTitleColumn() {
-            assertEquals("title", mColumn.name());
+        public void mapsToSnippetColumn() {
+            assertEquals("snippet", mColumn.name());
         }
 
         @Test
