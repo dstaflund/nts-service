@@ -176,7 +176,9 @@
   <div id="info-tab" *ngIf="selectedMenuItemName === 'Intro'">
     <div>
       This application lets you search and view the boundaries of National Topographic System (NTS) maps, a
-      system used by Natural Resources Canada for providing general topographic maps of the country.
+      system used by Natural Resources Canada for providing general topographic maps of the country.  It is not
+      meant to be replacement for published topographical maps, but simply a online lookup of these maps
+      based on name, title, and coordinates.
     </div>
     <div>
       A map sheet is classified by a string containing a number identifying the 1:1,000,000 scale <span>map series</span>
@@ -196,7 +198,7 @@
       and the title is <span>LANIGAN</span>.
     </div>
     <div>
-      To use this application, press the search icon, enter a combination of the name, title, and coordinates
+      To use this application, press the search icon, enter a combination of the name, title, or coordinates
       of the maps you want to locate, and press return.  You can sort and page through the results and can click
       on individual maps to see their boundaries.
       <ul>
@@ -207,7 +209,7 @@
           etc.</li>
         <li>When searching on a coordinate, a left-most matching-digit search is performed.  Search on an coordinate
           of <span>52.2</span> would result in <span>52.20</span>, <span>52.25</span>, <span>52.26</span>, etc.</li>
-        <li>When searching on more than one field, only records that match all supplied will be returned.</li>
+        <li>When searching on more than one field, only records that match all entered values will be returned.</li>
       </ul>
     </div>
   </div>
@@ -272,6 +274,23 @@
         <div class="ui-g-2">sortOrder</div>
         <div class="ui-g-6">Order to sort result set by (ex:  sortOrder=1)</div>
         <div class="ui-g-4">1 = ascending.  -1 = descending.</div>
+      </div>
+      <div>For example, a request that searches for the map of LANIGAN might look as follows:</div>
+      <div>
+        <a href="https://www.ntslookup.ca/json/nts?north=52&south=51.75&east=-105&west=-105.5">
+          https://www.ntslookup.ca/json/nts?north=52&amp;south=51.75&amp;east=-105&amp;west=-105.5
+        </a>
+      </div>
+      <div>
+        And a search for all maps in the 72 series starting at record 50, sorted in ascending order by name and returning
+        25 records at a time might look as follows:
+      </div>
+      <div>
+        <div>
+          <a href="https://www.ntslookup.ca/json/nts?name=72&offset=50&limit=25&sortField=name&sortOrder=1">
+            https://www.ntslookup.ca/json/nts?name=72&amp;offset=50&amp;limit=25&amp;sortField=name&amp;sortOrder=1
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -378,6 +397,15 @@
       <div class="ui-g-10">
         <a href="https://github.com/dstaflund/nts-service/issues">https://github.com/dstaflund/nts-service/issues</a>
       </div>
+    </div>
+  </div>
+  <div id="disclaimer-tab" *ngIf="selectedMenuItemName === 'Disclaimer'">
+    <div>
+      Although everyone is free to use this site, the information is provided on an "as is" basis with no
+      guarantees of completeness, accuracy, usefulness, or timeliness, and without any warranties of any
+      kind whatsoever, express or implied.  As such, Mr. Staflund assumes no responsibility or liability
+      for any errors and omissions in the content of this site and advises everyone to use published topographical
+      maps for planning their trips.
     </div>
   </div>
   <p-footer>

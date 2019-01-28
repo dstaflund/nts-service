@@ -90,6 +90,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
       {label: 'Dependencies', command: () => this.selectedMenuItemName = 'Dependencies' },
       {label: 'Release History', command: () => this.selectedMenuItemName = 'Releases' },
       {label: 'Contact', command: () => this.selectedMenuItemName = 'Contact' },
+      {label: 'Disclaimer', command: () => this.selectedMenuItemName = 'Disclaimer' }
     ];
   }
 
