@@ -46,6 +46,13 @@ body {
   z-index: 8;
 }
 
+#search-icon {
+  right: -16px;
+  bottom: -32px;
+  margin-left: 16px;
+  margin-top: 16px;
+}
+
 .search:hover {
   opacity: 1;
   visibility: visible;
@@ -65,7 +72,7 @@ body {
   display: block;
   width: 56px;
   height: 56px;
-  background-color: #FF0000;
+  background-color: #FFFFFF;
   border-radius: 50%;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
@@ -94,6 +101,13 @@ body {
   z-index: 8;
 }
 
+#info-icon {
+  right: -16px;
+  bottom: -32px;
+  margin-left: 16px;
+  margin-top: 16px;
+}
+
 .info:hover {
   opacity: 1;
   visibility: visible;
@@ -113,7 +127,7 @@ body {
   display: block;
   width: 56px;
   height: 56px;
-  background-color: #FF0000;
+  background-color: #FFFFFF;
   border-radius: 50%;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
@@ -157,3 +171,4 @@ p-dialog span {
   margin: 0px !important;
   padding: 0px !important;
 }
+
